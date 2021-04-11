@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://tofindmore.github.io</id>
     <title>ZhouJIan&apos;s Blog</title>
-    <updated>2021-04-10T16:37:17.848Z</updated>
+    <updated>2021-04-11T06:15:25.574Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://tofindmore.github.io"/>
     <link rel="self" href="https://tofindmore.github.io/atom.xml"/>
@@ -24,6 +24,13 @@
 <li>dhdud</li>
 </ul>
 ]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[关于]]></title>
+        <id>https://tofindmore.github.io/post/about/</id>
+        <link href="https://tofindmore.github.io/post/about/">
+        </link>
+        <updated>2019-01-25T11:09:48.000Z</updated>
     </entry>
     <entry>
         <title type="html"><![CDATA[Hello Gridea]]></title>
