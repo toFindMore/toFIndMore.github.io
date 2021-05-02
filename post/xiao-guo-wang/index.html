@@ -4,7 +4,7 @@
 <meta name="description" content=""/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-<title>关于本站 | ZhouJIan&#39;s Blog</title>
+<title>【题解】小国王 | ZhouJIan&#39;s Blog</title>
 
 <link rel="shortcut icon" href="https://tofindmore.github.io/favicon.ico?v=1619971055612">
 
@@ -81,16 +81,102 @@
         <div class="post-detail gt-bg-theme-color-second">
             <article class="gt-post-content">
                 <h2 class="post-title">
-                    关于本站
+                    【题解】小国王
                 </h2>
                 <div class="post-info">
                     <time class="post-time gt-c-content-color-first">
-                        · 2021-04-21 20:32 ·
+                        · 2021-05-02 01:16 ·
                     </time>
+                    
+                        <a href="https://tofindmore.github.io/tag/uvm5J7JcP/" class="post-tags">
+                            # 题解
+                        </a>
+                    
+                        <a href="https://tofindmore.github.io/tag/WTU1rFwtV/" class="post-tags">
+                            # dp
+                        </a>
                     
                 </div>
                 <div class="post-content">
-                    <p>大家我，我是zj。希望借此博客记录平时所学，web端的形式方便跨平台的查看 开干😬!</p>
+                    <!-- more -->
+<!-- more -->
+<blockquote>
+<p>https://www.acwing.com/problem/content/1066/</p>
+</blockquote>
+<p>在 n×n 的棋盘上放 k 个国王，国王可攻击相邻的 8 个格子，求使它们无法互相攻击的方案总数。</p>
+<h4 id="输入格式">输入格式</h4>
+<p>共一行，包含两个整数 n 和 k。</p>
+<h4 id="输出格式">输出格式</h4>
+<p>共一行，表示方案总数，若不能够放置则输出00。</p>
+<h4 id="数据范围">数据范围</h4>
+<p>1≤n≤10<br>
+0≤k≤<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mi>n</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">n^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></p>
+<h4 id="输入样例">输入样例：</h4>
+<pre><code>3 2
+</code></pre>
+<h4 id="输出样例">输出样例：</h4>
+<pre><code>16
+</code></pre>
+<h4 id="解答">解答</h4>
+<pre><code class="language-c++">#include &lt;iostream&gt;
+#include &lt;cstring&gt;
+#include &lt;algorithm&gt;
+
+using namespace std;
+
+typedef long long LL;
+
+int n, m;
+
+vector&lt;int&gt; stateVec, head[2000];
+
+// dp[i][j][k] 表示前i层共j个国王且第i层为k的状态
+LL dp[12][110][2000];
+int cnt[2000];
+
+// 同行不能相邻
+bool check(int state) {
+    for(int i=0;i&lt;n;i++) {
+        if((state &gt;&gt; i &amp; 1) &amp;&amp; (state &gt;&gt; (i+1) &amp; 1)) return false;
+    }
+    return true;
+}
+
+// 计算状态state的状态
+int count(int state) {
+    int cnt = 0;
+    for(int i=0;i&lt;n;i++) if(state &gt;&gt; i &amp; 1) ++cnt;
+    return cnt;
+}
+
+int main() {
+    cin &gt;&gt; n &gt;&gt; m;
+    
+    for(int i=0;i&lt;(1&lt;&lt;n);i++) if(check(i)) stateVec.push_back(i), cnt[i] = count(i);
+    for(int i=0;i&lt;stateVec.size();i++) {
+        for(int j=0;j&lt;stateVec.size();j++) {
+            int a = stateVec[i], b = stateVec[j];
+            if(!(a &amp; b) &amp;&amp; check(a | b)) {
+                head[a].push_back(b);
+            }
+        }
+    }
+    dp[0][0][0] = 1;
+    for(int i=1;i&lt;=n+1;i++) {
+        for(int j=0;j&lt;=m;j++) {
+            for(int k=0;k&lt;stateVec.size();k++) {
+                int a = stateVec[k];
+                for(int t=0;t&lt;head[a].size();t++) {
+                    int c = cnt[a];
+                    if(j &gt;= c) dp[i][j][a] += dp[i-1][j-c][head[a][t]];
+                }
+            }
+        }
+    }
+    cout &lt;&lt; dp[n+1][m][0] &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
 
                 </div>
             </article>
