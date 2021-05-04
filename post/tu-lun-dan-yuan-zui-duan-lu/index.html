@@ -6,7 +6,7 @@
 
 <title>【图论】单源最短路 | ZhouJian&#39;s Blog</title>
 
-<link rel="shortcut icon" href="https://tofindmore.github.io/favicon.ico?v=1620062933206">
+<link rel="shortcut icon" href="https://tofindmore.github.io/favicon.ico?v=1620106727652">
 
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://tofindmore.github.io/styles/main.css">
@@ -69,7 +69,7 @@
             
         </div>
         <div style="text-align: center">
-            <form id="gridea-search-form" style="position: relative" data-update="1620062933206" action="/search/index.html">
+            <form id="gridea-search-form" style="position: relative" data-update="1620106727652" action="/search/index.html">
                 <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
                 <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
             </form>
@@ -85,8 +85,16 @@
                 </h2>
                 <div class="post-info">
                     <time class="post-time gt-c-content-color-first">
-                        · 2021-05-04 00:39 ·
+                        · 2021-04-30 00:39 ·
                     </time>
+                    
+                        <a href="https://tofindmore.github.io/tag/B5QgbS4Ux/" class="post-tags">
+                            # 图论
+                        </a>
+                    
+                        <a href="https://tofindmore.github.io/tag/PDWXVMa-A/" class="post-tags">
+                            # algorithm
+                        </a>
                     
                 </div>
                 <div class="post-content">
@@ -167,7 +175,405 @@ int dist[N], st[M];
 void dijkstra() {
     memset(dist, 0x3f, sizeof dist);
     dist[1] = 0;
+ 	// 定义最小堆
     priority_queue &lt;PII, vector&lt;PII&gt;, greater&lt;PII&gt;&gt; heap;
+    heap.push({0, 1});
+
+    while (heap.size()) {
+        auto t = heap.top();
+        heap.pop();
+
+        int ver = t.second, distance = t.first;
+		
+        // 如果改节已被确定，则无需再进行相邻点更新
+        if (st[ver]) continue;
+        st[ver] = true;
+
+        for (int i = h[ver]; i != -1; i = ne[i]) {
+            int j = e[i];
+            if (dist[j] &gt; dist[ver] + w[i]) {
+                dist[j] = dist[ver] + w[i];
+                heap.push({dist[j], j});
+            }
+        }
+    }
+}
+</code></pre>
+<h3 id="2-spfashortest-path-fast-algorithm">2. SPFA（Shortest Path Fast Algorithm）</h3>
+<p>这个算法是广搜的变形，很明显，当路径长度为1的时候，我们可以用BFS来算最短路。</p>
+<p>这个算法在随机图上的时间复杂度是O(<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>k</mi><mi>m</mi></mrow><annotation encoding="application/x-tex">km</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span><span class="mord mathdefault">m</span></span></span></span>), k是一个很小的常数，对于特殊图，可能会达到O(​<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>m</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">mn</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">m</span><span class="mord mathdefault">n</span></span></span></span>) 的时间复杂度。</p>
+<blockquote>
+<p>这个算法是可以处理负权边的</p>
+</blockquote>
+<p><strong>代码模板</strong></p>
+<pre><code class="language-c++">// 起始点 S
+int dist[N], S;
+bool st[N];
+
+// 使用的是邻接表
+void spfa() {
+    queue&lt;int&gt; que;
+    que.push(S);
+    dist[u] = 0, st[S] = 1;
+    while (!que.empty()) {
+        int cur = que.front();
+        que.pop();
+        st[cur] = 0;
+        // 遍历所有相邻节点
+        for (int i = h[cur]; i != -1; i = ne[i]) {
+            int k = e[i];
+            if (dist[cur] + w[i] &lt; dist[k]) {
+                dist[k] = dist[cur] + w[i];
+                // 如果不在队列中，则加入队列
+                if (st[k] == 0) que.push(k);
+            }
+        }
+    }
+}
+</code></pre>
+<h3 id="3-floyd多源">3. Floyd（多源）</h3>
+<p>这个算法可以通过O(<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mi>n</mi><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">n^3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span></span></span></span>)的时间复杂度算出任意两个点的最短路，是一种dp思路。</p>
+<p><strong>代码模板</strong></p>
+<pre><code class="language-c++">int dist[N][N];
+
+void floyd() {
+    for(int k=1;k&lt;=n;k++) 
+        for(int i=1;i&lt;=n;i++) 
+            for(int j=1;j&lt;=n;j++) 
+    			dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
+}
+</code></pre>
+<h3 id="例题讲解">例题讲解</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">例题</th>
+<th style="text-align:center">做法描述</th>
+<th>代码</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><a href="https://www.acwing.com/problem/content/1131/">AcWing 1129. 热浪</a></td>
+<td style="text-align:center">直接一遍spfa既可，也可以用dijkstra</td>
+<td><a href="#1129">🔗</a></td>
+</tr>
+<tr>
+<td style="text-align:center"><a href="https://www.acwing.com/problem/content/1130/">AcWing 1128. 信使</a></td>
+<td style="text-align:center">数据量不大，可以直接一遍floyd，算出距离起点到各点之间的最短路长度的最大值</td>
+<td><a href="#1128">🔗</a></td>
+</tr>
+<tr>
+<td style="text-align:center"><a href="https://www.acwing.com/problem/content/1129/">AcWing 1127. 香甜的黄油</a></td>
+<td style="text-align:center">对各节点进行一遍spfa，然后将各奶牛到该节点的最短路径相加取最小既可</td>
+<td><a href="#1127">🔗</a></td>
+</tr>
+<tr>
+<td style="text-align:center"><a href="https://www.acwing.com/problem/content/1128/">AcWing 1126. 最小花费</a></td>
+<td style="text-align:center">乘法最大值（权值小于1），dijkstra修改为乘法的最短路，可以用log来证明其使用最短路</td>
+<td><a href="#1126">🔗</a></td>
+</tr>
+<tr>
+<td style="text-align:center"><a href="https://www.acwing.com/problem/content/922/">AcWing 920. 最优乘车</a></td>
+<td style="text-align:center">最小换乘，将单程链中每个节点的前驱都指向该节点，变成了最短路问题，答案就是最短路长度 - 1</td>
+<td><a href="#920">🔗</a></td>
+</tr>
+<tr>
+<td style="text-align:center"><a href="https://www.acwing.com/problem/content/905/">AcWing 903. 昂贵的聘礼</a></td>
+<td style="text-align:center">建立一个虚拟节点， 注意所有交易链路的等级最小值和最大值不能超过M，用朴素dij暴力所有等级区间既可</td>
+<td><a href="#903">🔗</a></td>
+</tr>
+</tbody>
+</table>
+<h4 id="span-id1129acwing-1129-热浪span"><span id="1129">AcWing 1129. 热浪</span></h4>
+<pre><code class="language-c++">#include &lt;iostream&gt;
+#include &lt;queue&gt;
+#include &lt;cstring&gt;
+
+using namespace std;
+
+const int N = 2510, M = 6210 &lt;&lt; 1;
+
+int start, en, n, m;
+
+int e[M], nxt[M], w[M], h[N], idx;
+
+int dist[N], st[N];
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, nxt[idx] = h[a], h[a] = idx++;
+}
+
+void spfa(int u) {
+    queue&lt;int&gt; que;
+    que.push(u);
+    dist[u] = 0, st[u] = 1;
+    while (!que.empty()) {
+        int cur = que.front();
+        que.pop();
+        st[cur] = 0;
+        for (int i = h[cur]; i != -1; i = nxt[i]) {
+            int k = e[i];
+            if (dist[cur] + w[i] &lt; dist[k]) {
+                dist[k] = dist[cur] + w[i];
+                if (st[k] == 0) que.push(k);
+            }
+        }
+    }
+}
+
+int main() {
+    cin &gt;&gt; n &gt;&gt; m &gt;&gt; start &gt;&gt; en;
+    memset(h, -1, sizeof h);
+    memset(dist, 0x3f, sizeof dist);
+    for (int i = 1; i &lt;= m; i++) {
+        int a, b, c;
+        cin &gt;&gt; a &gt;&gt; b &gt;&gt; c;
+        add(a, b, c), add(b, a, c);
+    }
+    spfa(start);
+    cout &lt;&lt; dist[en] &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+<h4 id="span-id1128acwing-1128-信使span"><span id="1128">AcWing 1128. 信使</span></h4>
+<pre><code class="language-c++">#include &lt;iostream&gt;
+#include &lt;cstring&gt;
+#include &lt;algorithm&gt;
+
+using namespace std;
+
+int n, m;
+
+const int N = 110, INF = 0x3f3f3f3f;
+
+int dist[N][N];
+
+int main() {
+    cin &gt;&gt; n &gt;&gt; m;
+
+    memset(dist, 0x3f, sizeof dist);
+
+    for (int i = 1; i &lt;= n; i++) dist[i][i] = 0;
+
+    for (int i = 1; i &lt;= m; i++) {
+        int p1, p2, dis;
+        cin &gt;&gt; p1 &gt;&gt; p2 &gt;&gt; dis;
+        dist[p1][p2] = dist[p2][p1] = min(dist[p1][p2], dis);
+    }
+
+    for (int k = 1; k &lt;= n; k++)
+        for (int i = 1; i &lt;= n; i++)
+            for (int j = 1; j &lt;= n; j++)
+                dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
+    int ans = -1;
+    for (int i = 1; i &lt;= n; i++) {
+        if (dist[1][i] == INF) {
+            ans = -1;
+            break;
+        }
+        ans = max(ans, dist[1][i]);
+    }
+    cout &lt;&lt; ans &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+<h4 id="span-id1127acwing-1127-香甜的黄油span"><span id="1127">AcWing 1127. 香甜的黄油</span></h4>
+<pre><code class="language-c++">#include &lt;iostream&gt;
+#include &lt;cstring&gt;
+#include &lt;algorithm&gt;
+#include &lt;queue&gt;
+
+using namespace std;
+
+int n, p, c;
+
+const int N = 810, M = 510, T = 1510 * 2, INF = 0x3f3f3f3f;
+
+int r[N], dist[T];
+bool st[T];
+
+int ne[T], w[T], e[T], h[N], idx;
+
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx++;
+}
+
+void spfa(int S) {
+    memset(st, 0, sizeof st);
+    memset(dist, 0x3f, sizeof dist);
+    queue&lt;int&gt; que;
+    que.push(S);
+    dist[S] = 0;
+    while (!que.empty()) {
+        int u = que.front();
+        que.pop();
+        st[u] = false;
+        for (int i = h[u]; i != -1; i = ne[i]) {
+            int j = e[i];
+            if (dist[u] + w[i] &lt; dist[j]) {
+                dist[j] = dist[u] + w[i];
+                if (!st[j]) que.push(j), st[j] = true;
+            }
+        }
+    }
+}
+
+
+int main() {
+    cin &gt;&gt; n &gt;&gt; p &gt;&gt; c;
+    memset(h, -1, sizeof h);
+    for (int i = 1; i &lt;= n; i++) cin &gt;&gt; r[i];
+    for (int i = 1; i &lt;= c; i++) {
+        int a, b, wi;
+        cin &gt;&gt; a &gt;&gt; b &gt;&gt; wi;
+        add(a, b, wi), add(b, a, wi);
+    }
+    int ans = INF;
+    for (int i = 1; i &lt;= p; i++) {
+        spfa(i);
+        int sum = 0, j = 1;
+        for (; j &lt;= n; j++) {
+            if (dist[r[j]] == INF) break;
+            sum += dist[r[j]];
+        }
+        if (j &lt;= n) continue;
+        ans = min(ans, sum);
+    }
+    cout &lt;&lt; ans &lt;&lt; endl;
+    return 0;
+}
+
+</code></pre>
+<h4 id="span-id1126acwing-1126-最小花费span"><span id="1126">AcWing 1126. 最小花费</span></h4>
+<pre><code class="language-c++">#include &lt;iostream&gt;
+#include &lt;cstring&gt;
+#include &lt;algorithm&gt;
+
+using namespace std;
+
+int n, m, S, T;
+
+const int N = 2010, INF = 0x3f3f3f3f;
+
+double d[N][N], dist[N];
+bool st[N];
+
+double dijkstra() {
+    dist[S] = 1.0;
+    for (int i = 1; i &lt;= n; i++) {
+        int cur = -1;
+        for (int j = 1; j &lt;= n; j++) if (!st[j] &amp;&amp; (cur == -1 || dist[cur] &lt; dist[j])) cur = j;
+        st[cur] = true;
+        for (int j = 1; j &lt;= n; j++) if (dist[cur] * d[cur][j] &gt; dist[j]) dist[j] = dist[cur] * d[cur][j];
+    }
+    return dist[T];
+}
+
+int main() {
+    cin &gt;&gt; n &gt;&gt; m;
+    for (int i = 0; i &lt; N; i++) d[i][i] = 1;
+    for (int i = 1; i &lt;= m; i++) {
+        int x, y, z;
+        scanf(&quot;%d%d%d&quot;, &amp;x, &amp;y, &amp;z);
+        d[x][y] = d[y][x] = (100.0 - z * 1.0) / 100.0;
+    }
+    cin &gt;&gt; S &gt;&gt; T;
+    printf(&quot;%.8lf\n&quot;, 100.0 / dijkstra());
+    return 0;
+}
+</code></pre>
+<h4 id="span-id920acwing-920-最优乘车span"><span id="920">AcWing 920. 最优乘车</span></h4>
+<pre><code class="language-c++">#include &lt;iostream&gt;
+#include &lt;cstring&gt;
+#include &lt;algorithm&gt;
+#include &lt;sstream&gt;
+#include &lt;queue&gt;
+
+using namespace std;
+
+const int N = 510, INF = 0x3f3f3f3f;
+
+int g[N][N], dist[N], stop[N];
+bool st[N];
+int n, m;
+
+void spfa() {
+    memset(dist, 0x3f, sizeof dist);
+    queue&lt;int&gt; que;
+    dist[1] = 0;
+    que.push(1);
+    st[1] = true;
+    while (!que.empty()) {
+        int u = que.front();
+        que.pop();
+        st[u] = false;
+        for (int i = 1; i &lt;= n; i++) {
+            if (g[u][i] + dist[u] &lt; dist[i]) {
+                dist[i] = g[u][i] + dist[u];
+                if (!st[i]) que.push(i);
+            }
+        }
+    }
+}
+
+int main() {
+    memset(g, 0x3f, sizeof g);
+    for (int i = 0; i &lt; N; i++) g[i][i] = 0;
+    cin &gt;&gt; m &gt;&gt; n;
+    string line;
+    getline(cin, line);
+    while (m--) {
+        getline(cin, line);
+        stringstream ssin(line);
+        int cnt = 0, p;
+        while (ssin &gt;&gt; p) stop[cnt++] = p;
+        for (int i = 0; i &lt; cnt; i++) for (int j = i + 1; j &lt; cnt; j++) g[stop[i]][stop[j]] = 1;
+    }
+    spfa();
+    if (dist[n] == INF) puts(&quot;NO&quot;);
+    else cout &lt;&lt; max(0, dist[n] - 1) &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+<h4 id="span-id903acwing-903-昂贵的聘礼-span"><span id="903">AcWing 903. 昂贵的聘礼 </span></h4>
+<pre><code class="language-c++">#include &lt;iostream&gt;
+#include &lt;cstring&gt;
+#include &lt;algorithm&gt;
+#include &lt;queue&gt;
+
+using namespace std;
+
+int n, m;
+int P, L, X;
+int T, V;
+
+const int N = 110, M = 110 * 110;
+
+struct Item {
+    int id, p, l;
+};
+
+unordered_map&lt;int, Item&gt; i2i;
+
+unordered_map&lt;int, unordered_map&lt;int, int&gt;&gt; mp;
+
+int ne[M], w[M], h[N], e[M], idx;
+
+int dist[N], st[M];
+
+void add(int a, int b, int c) {
+    w[idx] = c, e[idx] = b, ne[idx] = h[a], h[a] = idx++;
+}
+
+typedef pair&lt;int, int&gt; PII;
+
+
+void dijkstra()  // 求1号点到n号点的最短路距离
+{
+    memset(dist, 0x3f, sizeof dist);
+    dist[1] = 0;
+    priority_queue&lt;PII, vector&lt;PII&gt;, greater&lt;PII&gt;&gt; heap;
     heap.push({0, 1});
 
     while (heap.size()) {
@@ -188,46 +594,72 @@ void dijkstra() {
         }
     }
 }
-</code></pre>
-<h3 id="2-spfashortest-path-fast-algorithm">2. SPFA（Shortest Path Fast Algorithm）</h3>
-<p>这个算法是广搜的变形，很明显，当路径长度为1的时候，我们可以用BFS来算最短路。</p>
-<p>这个算法在随机图上的时间复杂度是O(<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>k</mi><mi>m</mi></mrow><annotation encoding="application/x-tex">km</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span><span class="mord mathdefault">m</span></span></span></span>), k是一个很小的常数，对于特殊图，可能会达到O(​<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>m</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">mn</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">m</span><span class="mord mathdefault">n</span></span></span></span>) 的时间复杂度。</p>
-<p><strong>代码模板</strong></p>
-<pre><code class="language-c++">// 起始点 S
-int dist[N], S;
-bool st[N];
 
-void spfa() {
-    queue&lt;int&gt; que;
-    que.push(S);
-    dist[u] = 0, st[S] = 1;
-    while (!que.empty()) {
-        int cur = que.front();
-        que.pop();
-        st[cur] = 0;
-        for (int i = h[cur]; i != -1; i = ne[i]) {
-            int k = e[i];
-            if (dist[cur] + w[i] &lt; dist[k]) {
-                dist[k] = dist[cur] + w[i];
-                if (st[k] == 0) que.push(k);
+
+void dijkstra(int l, int r) {
+    memset(dist, 0x3f, sizeof dist);
+    memset(st, 0, sizeof st);
+    dist[n + 1] = 0;
+    priority_queue&lt;PII, vector&lt;PII&gt;, greater&lt;PII&gt;&gt; heap;
+    heap.push({0, n + 1});
+
+    while (heap.size()) {
+        auto t = heap.top();
+        heap.pop();
+
+        int ver = t.second, distance = t.first;
+
+        if (st[ver]) continue;
+        st[ver] = true;
+
+        for (int i = h[ver]; i != -1; i = ne[i]) {
+            int j = e[i];
+            if (i2i[j].l &lt; l || i2i[j].l &gt; r) continue;
+            if (dist[j] &gt; dist[ver] + w[i]) {
+                dist[j] = dist[ver] + w[i];
+                heap.push({dist[j], j});
             }
         }
     }
 }
-</code></pre>
-<h3 id="3-floyd">3. Floyd</h3>
-<p>这个算法可以通过O(<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mi>n</mi><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">n^3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span></span></span></span>)的时间复杂度算出任意两个点的最短路，其实是一种dp思路。</p>
-<p><strong>代码模板</strong></p>
-<pre><code class="language-c++">int dist[N][N];
 
-void floyd() {
-    for(int k=1;k&lt;=n;k++) 
-        for(int i=1;i&lt;=n;i++) 
-            for(int j=1;j&lt;=n;j++) 
-    			dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
+
+int main() {
+    memset(h, -1, sizeof h);
+
+    cin &gt;&gt; m &gt;&gt; n;
+    for (int i = 1; i &lt;= n; i++) {
+        scanf(&quot;%d%d%d&quot;, &amp;P, &amp;L, &amp;X);
+        Item item = {i, P, L};
+        for (int j = 1; j &lt;= X; j++) {
+            scanf(&quot;%d%d&quot;, &amp;T, &amp;V);
+            mp[T][i] = V;
+        }
+        i2i[i] = item;
+    }
+
+    // 建边
+    for (auto[k, v] : mp) {
+        for (auto[k1, v1] : v) {
+            if (abs(i2i[k1].l - i2i[k].l) &lt;= m) {
+                add(k, k1, v1);
+            }
+        }
+    }
+
+    // 虚拟节点
+    for (int i = 1; i &lt;= n; i++) add(n + 1, i, i2i[i].p);
+
+    int ans = 0x3f3f3f3f;
+    int le = i2i[1].l;
+    for (int i = le - m; i &lt;= le; i++) {
+        dijkstra(i, i + m);
+        ans = min(ans, dist[1]);
+    }
+    cout &lt;&lt; ans &lt;&lt; endl;
+    return 0;
 }
 </code></pre>
-<h3 id="例题讲解">例题讲解</h3>
 
                 </div>
             </article>
@@ -245,33 +677,6 @@ void floyd() {
         
 
         
-
-        
-            <script src='https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js'></script>
-
-<style>
-	div#vcomments{
-		width:100%;
-		max-width: 1000px;
-		padding: 2.5%
-	}
-</style>
-
-
-	<div id="vcomments"></div>
-
-<script>
-	new Valine({
-		el: '#vcomments',
-		appId: '',
-		appKey: '',
-		avatar: 'monsterid',
-		pageSize: 5,
-		recordIp: false,
-		placeholder: 'Just Go Go',
-		visitor: false,
-	});
-</script>
 
         
 
@@ -293,7 +698,7 @@ void floyd() {
         
     </div>
     <div class="footer-info">
-        
+        感谢yxc老师算法视频的讲解
     </div>
     <div>
         Theme by <a href="https://imhanjie.com/" target="_blank">imhanjie</a>, Powered by <a

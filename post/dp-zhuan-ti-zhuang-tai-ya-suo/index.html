@@ -6,7 +6,7 @@
 
 <title>【DP】状态压缩 | ZhouJian&#39;s Blog</title>
 
-<link rel="shortcut icon" href="https://tofindmore.github.io/favicon.ico?v=1620062933206">
+<link rel="shortcut icon" href="https://tofindmore.github.io/favicon.ico?v=1620106727652">
 
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://tofindmore.github.io/styles/main.css">
@@ -69,7 +69,7 @@
             
         </div>
         <div style="text-align: center">
-            <form id="gridea-search-form" style="position: relative" data-update="1620062933206" action="/search/index.html">
+            <form id="gridea-search-form" style="position: relative" data-update="1620106727652" action="/search/index.html">
                 <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
                 <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
             </form>
@@ -98,7 +98,8 @@
                     
                 </div>
                 <div class="post-content">
-                    <h2 id="算法介绍">算法介绍</h2>
+                    <!-- more -->
+<h2 id="算法介绍">算法介绍</h2>
 <!-- more -->
 <p>这是一类把集合转化为整数记录在DP状态中的算法。假设 1 代表持有某种状态，那么对于十进制数 <code>(11)D = (1011)B</code> 来说可以表示为持有第 <code>4</code> <code>2</code> <code>1</code>  3种状态。</p>
 <!-- more -->
@@ -115,15 +116,215 @@ do {
 <!-- more -->
 <h2 id="例题讲解">例题讲解</h2>
 <!-- more -->
-<h3 id="1-棋盘类问题">1. 棋盘类问题</h3>
+<h3 id="1-棋盘类问题基于连通性的dp">1. 棋盘类问题（基于连通性的DP）</h3>
 <p>棋盘类问题需要想清楚层与层之间的状态转移关系，通常是以 <code>dp[i][s1] ～ dp[i-1][s2]</code> 表示第 i 层状态 s1 是由 i-1 层状态转移而来，有时会牵扯到三层之间的关系，即  <code>dp[i][s1] ～ dp[i-1][s2] and dp[i-2][s3]</code><br>
 本站相关例题讲解</p>
-<!-- more -->
-<ol>
-<li><a href="https://tofindmore.github.io/post/ti-jie-327-yu-mi-tian/">玉米田</a></li>
-<li><a href="https://tofindmore.github.io/post/xiao-guo-wang/">小国王</a></li>
-</ol>
-<!-- more -->
+<table>
+<thead>
+<tr>
+<th style="text-align:center">例题</th>
+<th style="text-align:center">做法描述</th>
+<th>代码</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><a href="https://www.acwing.com/problem/content/1066/">AcWing 1064. 小国王</a></td>
+<td style="text-align:center"><code>dp[i][j][k]</code>表示第i行状态为k且前i行共可以放j个国王</td>
+<td><a href="#1064">🔗</a></td>
+</tr>
+<tr>
+<td style="text-align:center"><a href="https://www.acwing.com/problem/content/329/">AcWing 327. 玉米田</a></td>
+<td style="text-align:center"><code>dp[i][s]</code> 表示第i层压缩状态位s的总种法</td>
+<td><a href="#327">🔗</a></td>
+</tr>
+<tr>
+<td style="text-align:center"><a href="https://www.acwing.com/problem/content/294/">AcWing 292. 炮兵阵地</a></td>
+<td style="text-align:center">滚动数组 + <code>dp[i][j][k]</code>表示第i层状态j，i-1层状态为k</td>
+<td><a href="#292">🔗</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="2-集合类问题">2. 集合类问题</h3>
+<pre><code class="language-c++">// TODO
+</code></pre>
+<h4 id="span-id1064acwing-1064-小国王span"><span id="1064">AcWing 1064. 小国王</span></h4>
+<pre><code class="language-c++">#include &lt;iostream&gt;
+#include &lt;cstring&gt;
+#include &lt;algorithm&gt;
+
+using namespace std;
+
+typedef long long LL;
+
+int n, m;
+
+vector&lt;int&gt; stateVec, head[2000];
+LL dp[12][110][2000];
+int cnt[2000];
+
+bool check(int state) {
+    for (int i = 0; i &lt; n; i++) {
+        if ((state &gt;&gt; i &amp; 1) &amp;&amp; (state &gt;&gt; (i + 1) &amp; 1)) return false;
+    }
+    return true;
+}
+
+int count(int state) {
+    int cnt = 0;
+    for (int i = 0; i &lt; n; i++) if (state &gt;&gt; i &amp; 1) ++cnt;
+    return cnt;
+}
+
+int main() {
+    cin &gt;&gt; n &gt;&gt; m;
+
+    for (int i = 0; i &lt; (1 &lt;&lt; n); i++) if (check(i)) stateVec.push_back(i), cnt[i] = count(i);
+    for (int i = 0; i &lt; stateVec.size(); i++) {
+        for (int j = 0; j &lt; stateVec.size(); j++) {
+            int a = stateVec[i], b = stateVec[j];
+            if (!(a &amp; b) &amp;&amp; check(a | b)) {
+                head[a].push_back(b);
+            }
+        }
+    }
+    dp[0][0][0] = 1;
+    for (int i = 1; i &lt;= n + 1; i++) {
+        for (int j = 0; j &lt;= m; j++) {
+            for (int k = 0; k &lt; stateVec.size(); k++) {
+                int a = stateVec[k];
+                for (int t = 0; t &lt; head[a].size(); t++) {
+                    int c = cnt[a];
+                    if (j &gt;= c) dp[i][j][a] += dp[i - 1][j - c][head[a][t]];
+                }
+            }
+        }
+    }
+    cout &lt;&lt; dp[n + 1][m][0] &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+<h3 id="span-id327acwing-327-玉米田span"><span id="327">AcWing 327. 玉米田</span></h3>
+<pre><code class="language-c++">#include &lt;iostream&gt;
+#include &lt;cstring&gt;
+#include &lt;algorithm&gt;
+
+using namespace std;
+
+const int N = 1 &lt;&lt; 13 + 10;
+const int M = 14, MOD = 1e8;
+
+int n, m, t;
+
+int id[M];
+
+long long dp[M][N];
+
+bool check(int s) {
+    for (int i = 0; i &lt; m; i++) {
+        if ((s &gt;&gt; i &amp; 1) &amp;&amp; (s &gt;&gt; (i + 1) &amp; 1)) return false;
+    }
+    return true;
+}
+
+int main() {
+    cin &gt;&gt; n &gt;&gt; m;
+    for (int i = 1; i &lt;= n; i++) {
+        for (int j = 0; j &lt; m; j++) {
+            cin &gt;&gt; t;
+            id[i] = (id[i] &lt;&lt; 1) + t;
+        }
+    }
+    dp[0][0] = 1;
+    long long ans = 0;
+    for (int i = 1; i &lt;= n; i++) {
+        int pre = id[i - 1], cur = id[i];
+        int s1 = cur;
+        do {
+            int s2 = pre;
+            do {
+                if (check(s1) &amp;&amp; check(s2) &amp;&amp; (s1 &amp; s2) == 0) {
+                    dp[i][s1] = (dp[i][s1] + dp[i - 1][s2]) % MOD;
+                }
+                s2 = (s2 - 1) &amp; pre;
+            } while (s2 != pre);
+            if (i == n) ans = (ans + dp[i][s1]) % MOD;
+            s1 = (s1 - 1) &amp; cur;
+        } while (s1 != cur);
+    }
+    cout &lt;&lt; ans &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+<h4 id="span-id292acwing-292-炮兵阵地-span"><span id="292">AcWing 292. 炮兵阵地 </span></h4>
+<pre><code class="language-c++">#include &lt;iostream&gt;
+#include &lt;cstring&gt;
+#include &lt;algorithm&gt;
+#include &lt;vector&gt;
+
+using namespace std;
+const int N = 110;
+const int M = 1 &lt;&lt; 10;
+int n, m;
+
+vector&lt;int&gt; id(N);
+int dp[2][M][M];
+
+bool check(int s) {
+    for (int i = 0; i &lt; m; i++) {
+        int t = ((s &gt;&gt; i) &amp; 1) + ((s &gt;&gt; (i + 1)) &amp; 1) + ((s &gt;&gt; (i + 2)) &amp; 1);
+        if (t &gt;= 2) return false;
+    }
+    return true;
+}
+
+int count(int s) {
+    int ret = 0;
+    for (int i = 0; i &lt;= m; i++) {
+        if (s &gt;&gt; i &amp; 1) ret++;
+    }
+    return ret;
+}
+
+int main() {
+    cin &gt;&gt; n &gt;&gt; m;
+    vector&lt;int&gt; head[N];
+    head[0].push_back(0);
+    head[1].push_back(0);
+    for (int i = 2; i &lt;= n + 1; i++) {
+        for (int j = 0; j &lt; m; j++) {
+            char c;
+            cin &gt;&gt; c;
+            id[i] = (id[i] &lt;&lt; 1) + (c == 'P');
+        }
+        int s = id[i];
+        do {
+            if (check(s)) head[i].push_back(s);
+            s = (s - 1) &amp; id[i];
+        } while (s != id[i]);
+    }
+
+
+    int turn = 1;
+    int ans = 0;
+    for (int i = 2; i &lt;= n + 1; i++) {
+        turn ^= 1;
+        for (int j = 0; j &lt; head[i].size(); j++) {
+            for (int k = 0; k &lt; head[i - 1].size(); k++) {
+                for (int v = 0; v &lt; head[i - 2].size(); v++) {
+                    int c = head[i][j], p = head[i - 1][k], pp = head[i - 2][v];
+                    if (((c &amp; p) == 0) &amp;&amp; ((pp &amp; p) == 0) &amp;&amp; ((pp &amp; c) == 0)) {
+                        dp[turn][c][p] = max(dp[turn ^ 1][p][pp] + count(c), dp[turn][c][p]);
+                        ans = max(ans, dp[turn][c][p]);
+                    }
+                }
+            }
+        }
+    }
+    cout &lt;&lt; ans &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
 
                 </div>
             </article>
@@ -134,33 +335,6 @@ do {
         
 
         
-
-        
-            <script src='https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js'></script>
-
-<style>
-	div#vcomments{
-		width:100%;
-		max-width: 1000px;
-		padding: 2.5%
-	}
-</style>
-
-
-	<div id="vcomments"></div>
-
-<script>
-	new Valine({
-		el: '#vcomments',
-		appId: '',
-		appKey: '',
-		avatar: 'monsterid',
-		pageSize: 5,
-		recordIp: false,
-		placeholder: 'Just Go Go',
-		visitor: false,
-	});
-</script>
 
         
 
@@ -182,7 +356,7 @@ do {
         
     </div>
     <div class="footer-info">
-        
+        感谢yxc老师算法视频的讲解
     </div>
     <div>
         Theme by <a href="https://imhanjie.com/" target="_blank">imhanjie</a>, Powered by <a
