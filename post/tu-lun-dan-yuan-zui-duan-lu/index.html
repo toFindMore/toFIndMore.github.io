@@ -6,7 +6,7 @@
 
 <title>【图论】单源最短路 | ZhouJian&#39;s Blog</title>
 
-<link rel="shortcut icon" href="https://tofindmore.github.io/favicon.ico?v=1620108628143">
+<link rel="shortcut icon" href="https://tofindmore.github.io/favicon.ico?v=1620134809214">
 
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://tofindmore.github.io/styles/main.css">
@@ -69,7 +69,7 @@
             
         </div>
         <div style="text-align: center">
-            <form id="gridea-search-form" style="position: relative" data-update="1620108628143" action="/search/index.html">
+            <form id="gridea-search-form" style="position: relative" data-update="1620134809214" action="/search/index.html">
                 <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
                 <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
             </form>
@@ -201,7 +201,7 @@ void dijkstra() {
 </code></pre>
 <h3 id="2-spfashortest-path-fast-algorithm">2. SPFA（Shortest Path Fast Algorithm）</h3>
 <p>这个算法是广搜的变形，很明显，当路径长度为1的时候，我们可以用BFS来算最短路。</p>
-<p>这个算法在随机图上的时间复杂度是O(<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>k</mi><mi>m</mi></mrow><annotation encoding="application/x-tex">km</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span><span class="mord mathdefault">m</span></span></span></span>), k是一个很小的常数，对于特殊图，可能会达到O(​<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>m</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">mn</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">m</span><span class="mord mathdefault">n</span></span></span></span>) 的时间复杂度。</p>
+<p>这个算法在随机图上的时间复杂度是O(<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>k</mi><mi>m</mi></mrow><annotation encoding="application/x-tex">km</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span><span class="mord mathdefault">m</span></span></span></span>), k是一个很小的常数，对于特殊图，可能会达到O(<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>m</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">mn</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">m</span><span class="mord mathdefault">n</span></span></span></span>) 的时间复杂度。</p>
 <blockquote>
 <p>这个算法是可以处理负权边的</p>
 </blockquote>
@@ -282,6 +282,11 @@ void floyd() {
 <td style="text-align:center"><a href="https://www.acwing.com/problem/content/905/">AcWing 903. 昂贵的聘礼</a></td>
 <td style="text-align:center">建立一个虚拟节点， 注意所有交易链路的等级最小值和最大值不能超过M，用朴素dij暴力所有等级区间既可</td>
 <td><a href="#903">🔗</a></td>
+</tr>
+<tr>
+<td style="text-align:center"><a href="https://www.acwing.com/problem/content/description/1137/">AcWing 1135. 新年好</a></td>
+<td style="text-align:center">spfa会被卡，用堆优化的dij过的，主要就是求出1、a、b、c、d、e点各自的最短路，然后遍历路线即可</td>
+<td><a href="#1135">🔗</a></td>
 </tr>
 </tbody>
 </table>
@@ -656,6 +661,115 @@ int main() {
         dijkstra(i, i + m);
         ans = min(ans, dist[1]);
     }
+    cout &lt;&lt; ans &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+<h4 id="span-id1135acwing-1135-新年好span"><span id="1135">AcWing 1135. 新年好</span></h4>
+<pre><code class="language-c++">#include &lt;iostream&gt;
+#include &lt;cstring&gt;
+#include &lt;algorithm&gt;
+#include &lt;queue&gt;
+#include &lt;map&gt;
+
+using namespace std;
+
+const int N = 50010, M = 2e5 + 10, INF = 0x3f3f3f3f;
+
+int n, m, a, b, c, d, f;
+
+int ne[M], w[M], h[N], e[M], idx;
+
+int dist[6][N];
+
+bool st[N];
+
+void add(int a, int b, int c) {
+    w[idx] = c, e[idx] = b, ne[idx] = h[a], h[a] = idx++;
+}
+
+// void spfa(int distIdx, int S) {
+//     auto &amp;dis = dist[distIdx];
+//     memset(st, 0, sizeof st);
+//     memset(dis, 0x3f, sizeof dis);
+//     queue&lt;int&gt; que;
+//     que.push(S);
+//     dis[S] = 0;
+//     while(!que.empty()) {
+//         int t = que.front();
+//         que.pop();
+//         st[t] = false;
+//         for(int i=h[t];~i;i=ne[i]) {
+//             int j = e[i];
+//             if(dis[t] + w[i] &lt; dis[j]) {
+//                 dis[j] = dis[t] + w[i];
+//                 if(!st[j]) que.push(j), st[j] = true;
+//             }
+//         }
+//     }
+// }
+
+typedef pair&lt;int, int&gt; PII;
+
+void dijkstra(int distIdx, int S)  // 求1号点到n号点的最短路距离
+{
+    auto &amp;dis = dist[distIdx];
+    memset(dis, 0x3f, sizeof dis);
+    memset(st, 0, sizeof st);
+    dis[S] = 0;
+    priority_queue&lt;PII, vector&lt;PII&gt;, greater&lt;PII&gt;&gt; heap;
+    heap.push({0, S});
+
+    while (heap.size())
+    {
+        auto t = heap.top();
+        heap.pop();
+
+        int ver = t.second, distance = t.first;
+
+        if (st[ver]) continue;
+        st[ver] = true;
+
+        for (int i = h[ver]; i != -1; i = ne[i])
+        {
+            int j = e[i];
+            if (dis[j] &gt; dis[ver] + w[i])
+            {
+                dis[j] = dis[ver] + w[i];
+                heap.push({dis[j], j});
+            }
+        }
+    }
+}
+
+int main() {
+    cin &gt;&gt; n &gt;&gt; m;
+    cin &gt;&gt; a &gt;&gt; b &gt;&gt; c &gt;&gt; d &gt;&gt; f;
+    memset(h, -1, sizeof h);
+    for(int i=1;i&lt;=m;i++) {
+        int a1, b1, c1;
+        scanf(&quot;%d%d%d&quot;, &amp;a1, &amp;b1, &amp;c1);
+        add(a1, b1, c1), add(b1, a1, c1);
+    }
+    dijkstra(0, 1);
+    dijkstra(1, a);
+    dijkstra(2, b);
+    dijkstra(3, c);
+    dijkstra(4, d);
+    dijkstra(5, f);
+    vector&lt;int&gt; nums = {a, b, c, d, f};
+    sort(nums.begin(), nums.end());
+    unordered_map&lt;int, int&gt; mp;
+    mp[a] = 1, mp[b] = 2, mp[c] = 3, mp[d] = 4, mp[f] = 5; 
+
+    int ans = INF;
+    do {
+        int t = dist[0][nums[0]];
+        for(int i=0;i&lt;4;i++) {
+            t += dist[mp[nums[i]]][nums[i+1]];
+        }
+        ans = min(ans, t);
+    } while(next_permutation(nums.begin(), nums.end()));
     cout &lt;&lt; ans &lt;&lt; endl;
     return 0;
 }
