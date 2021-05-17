@@ -1,0 +1,309 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+<meta name="description" content=""/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+<title>【数据结构】单调栈  | ZhouJian&#39;s Blog</title>
+
+<link rel="shortcut icon" href="https://tofindmore.github.io/favicon.ico?v=1621265406959">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://tofindmore.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dart.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <div class="navbar-brand">
+        <img class="user-avatar" src="/images/avatar.png" alt="头像">
+        <div class="site-name gt-c-content-color-first">
+            ZhouJian&#39;s Blog
+        </div>
+    </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+                <div class="nav-item">
+                    
+                        <a href="/" class="menu gt-a-link">
+                            首页
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/tags" class="menu gt-a-link">
+                            标签
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/post/guan-yu/" class="menu gt-a-link">
+                            关于
+                        </a>
+                    
+                </div>
+            
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1621265406959" action="/search/index.html">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    【数据结构】单调栈 
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2021-05-17 23:15 ·
+                    </time>
+                    
+                        <a href="https://tofindmore.github.io/tag/R_vR8X-2_/" class="post-tags">
+                            # 数据结构
+                        </a>
+                    
+                        <a href="https://tofindmore.github.io/tag/PDWXVMa-A/" class="post-tags">
+                            # algorithm
+                        </a>
+                    
+                </div>
+                <div class="post-content">
+                    <!-- more -->
+<h4 id="1-何谓单调栈">1. 何谓单调栈</h4>
+<p>单调栈即满足单调性的栈结构。在遇到实际情况时，需要将不需要维护的数据从栈顶弹出，维护队列单调性。</p>
+<blockquote>
+<p>一般的处理代码如下</p>
+</blockquote>
+<pre><code class="language-c++">// 单调递增栈，插入 t
+while(!stk.empty() &amp;&amp; stk.top() &gt;= t) stk.pop();
+stk.push(t);
+</code></pre>
+<h4 id="2-实际中的问题">2. 实际中的问题</h4>
+<h5 id="p1-单调栈">P1  <a href="https://www.acwing.com/problem/content/description/832/">单调栈</a></h5>
+<blockquote>
+<p>给定一个长度为 N 的整数数列，输出每个数左边第一个比它小的数，如果不存在则输出 −1。</p>
+</blockquote>
+<pre><code class="language-c++">// 根据题意，对于某个待插入的数 t 来说，之前所有比 t 大的数， 对于 t 及以后的数来说都是无用的
+// 1. Why 对 t 无用? 答： t 要找比 t 小的
+// 2. Why 对 t 以后的数？答：如果往前找，找t就好了，比 t 前面且比 t 大的数不需要再比较了
+#include &lt;iostream&gt;
+#include &lt;stack&gt;
+
+using namespace std;
+
+int main() {
+    int n, t;
+    cin &gt;&gt; n;
+    stack&lt;int&gt; stk;
+    for (int i = 0; i &lt; n; i++) {
+        scanf(&quot;%d&quot;, &amp;t);
+        while (!stk.empty() &amp;&amp; stk.top() &gt;= t) stk.pop();
+        if (stk.empty()) cout &lt;&lt; &quot;-1 &quot;;
+        else cout &lt;&lt; stk.top() &lt;&lt; &quot; &quot;;
+        stk.push(t);
+    }
+    return 0;
+}
+</code></pre>
+<h5 id="p2-直方图中最大的矩形">P2 <a href="https://www.acwing.com/problem/content/133/">直方图中最大的矩形</a></h5>
+<blockquote>
+<p>如下图所示，直方图是由在公共基线处对齐的一系列矩形组成的多边形。</p>
+<p>矩形具有相等的宽度，但可以具有不同的高度。</p>
+<p>例如，图例左侧显示了由高度为 2,1,4,5,1,3,32,1,4,5,1,3,3 的矩形组成的直方图，矩形的宽度都为 11：</p>
+<p>现在，请你计算在公共基线处对齐的直方图中最大矩形的面积。</p>
+</blockquote>
+<figure data-type="image" tabindex="1"><img src="https://raw.githubusercontent.com/toFindMore/ImageBed/master/blog/image-20210517223209887.png" alt="image-20210517223209887" loading="lazy"></figure>
+<pre><code class="language-c++">#include &lt;iostream&gt;
+#include &lt;cstring&gt;
+#include &lt;algorithm&gt;
+#include &lt;stack&gt;
+
+using namespace std;
+
+typedef long long LL;
+
+const int N = 1e5 + 10;
+
+int l[N], r[N], g[N], n;
+
+int main() {
+    while (scanf(&quot;%d&quot;, &amp;n), n) {
+        for (int i = 1; i &lt;= n; i++) scanf(&quot;%d&quot;, g + i);
+        g[0] = -1, g[n + 1] = -1;
+        // 初始化数组 l[i], 表示所有下标 i 左边第一个比他小的下标
+        stack&lt;int&gt; stk;
+        stk.push(0);
+        for (int i = 1; i &lt;= n; i++) {
+            while (!stk.empty() &amp;&amp; g[stk.top()] &gt;= g[i]) stk.pop();
+            l[i] = stk.top();
+            stk.push(i);
+        }
+        while (!stk.empty()) stk.pop();
+        stk.push(n + 1);
+        // 初始化数组 r[i], 表示所有下标 i 右边第一个比他小的下标
+        for (int i = n; i &gt;= 1; i--) {
+            while (!stk.empty() &amp;&amp; g[stk.top()] &gt;= g[i]) stk.pop();
+            r[i] = stk.top();
+            stk.push(i);
+        }
+        // 枚举所有以 i 为顶边的情况
+        LL ans = 0;
+        for (int i = 1; i &lt;= n; i++) {
+            ans = max(ans, (LL) g[i] * (r[i] - l[i] - 1));
+        }
+        cout &lt;&lt; ans &lt;&lt; endl;
+    }
+    return 0;
+}
+</code></pre>
+<h5 id="p3-城市游戏">P3 <a href="https://www.acwing.com/problem/content/description/154/">城市游戏</a></h5>
+<blockquote>
+<p>求被 F 覆盖的最大矩形面积， 本题就是上一题直接的变形，枚举每一行，就可以看做是一个直方图</p>
+<pre><code class="language-t">R F F F F F
+F F F F F F
+R R R F F F
+F F F F F F
+F F F F F F
+</code></pre>
+</blockquote>
+<img src="https://raw.githubusercontent.com/toFindMore/ImageBed/master/blog/image-20210517225721173.png" alt="image-20210517225721173" style="zoom:100%;" />
+<pre><code class="language-c++">#include &lt;iostream&gt;
+#include &lt;cstring&gt;
+#include &lt;algorithm&gt;
+#include &lt;stack&gt;
+
+using namespace std;
+
+typedef long long LL;
+
+const int N = 1010;
+
+// mp[i][j] 表示第i行第j列方格上方包括自己有多少个F, 相当于上题中的矩形高度！！！
+int l[N], r[N], mp[N][N];
+int n, m;
+
+int solve(int g[]) {
+    g[0] = -1, g[n + 1] = -1;
+    // 初始化数组 l[i], 表示所有下标 i 左边第一个比他小的下标
+    stack&lt;int&gt; stk;
+    stk.push(0);
+    for (int i = 1; i &lt;= n; i++) {
+        while (!stk.empty() &amp;&amp; g[stk.top()] &gt;= g[i]) stk.pop();
+        l[i] = stk.top();
+        stk.push(i);
+    }
+    while (!stk.empty()) stk.pop();
+    stk.push(n + 1);
+    // 初始化数组 r[i], 表示所有下标 i 右边第一个比他小的下标
+    for (int i = n; i &gt;= 1; i--) {
+        while (!stk.empty() &amp;&amp; g[stk.top()] &gt;= g[i]) stk.pop();
+        r[i] = stk.top();
+        stk.push(i);
+    }
+    // 枚举所有以 i 为顶边的情况
+    LL ans = 0;
+    for (int i = 1; i &lt;= n; i++) {
+        ans = max(ans, (LL) g[i] * (r[i] - l[i] - 1));
+    }
+    return ans;
+}
+
+int main() {
+    cin &gt;&gt; m &gt;&gt; n;
+    char c[3];
+    int ans = 0;
+    for(int i=1;i&lt;=m;i++) {
+        for(int j=1;j&lt;=n;j++) {
+            scanf(&quot;%s&quot;, &amp;c);
+            if(c[0] == 'F') mp[i][j] = mp[i-1][j] + 1;
+        }
+        ans = max(ans, solve(mp[i]));
+    }
+    cout &lt;&lt; ans * 3 &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://tofindmore.github.io/post/tu-lun-dan-yuan-zui-duan-lu/" class="post-title gt-a-link">
+                    【图论】单源最短路
+                </a>
+            </div>
+        
+
+        
+
+        
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first">个人积累与技术分享</div>
+    <div class="social-container">
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        感谢yxc老师算法视频的讲解
+    </div>
+    <div>
+        Theme by <a href="https://imhanjie.com/" target="_blank">imhanjie</a>, Powered by <a
+                href="https://github.com/getgridea/gridea" target="_blank">Gridea | <a href="https://tofindmore.github.io/atom.xml" target="_blank">RSS</a></a>
+    </div>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+</div>
+</body>
+</html>
