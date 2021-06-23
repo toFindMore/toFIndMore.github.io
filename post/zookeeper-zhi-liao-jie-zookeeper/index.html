@@ -6,7 +6,7 @@
 
 <title>【ZooKeeper】 （一）了解ZooKeeper  | ZhouJian&#39;s Blog</title>
 
-<link rel="shortcut icon" href="https://tofindmore.github.io/favicon.ico?v=1624017303431">
+<link rel="shortcut icon" href="https://tofindmore.github.io/favicon.ico?v=1624461121680">
 
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://tofindmore.github.io/styles/main.css">
@@ -69,7 +69,7 @@
             
         </div>
         <div style="text-align: center">
-            <form id="gridea-search-form" style="position: relative" data-update="1624017303431" action="/search/index.html">
+            <form id="gridea-search-form" style="position: relative" data-update="1624461121680" action="/search/index.html">
                 <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
                 <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
             </form>
@@ -95,11 +95,11 @@
                 </div>
                 <div class="post-content">
                     <blockquote>
-<p>ZooKeeper 是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性的问题。其本质上是一个分布式的小文件存储系统。提供基于类似于文件系统的目录树方式的数据存储，并且可以对树中的节点进行有效管理。从而来维护和监控你存储的数据的状态变化。将通过监控这些数据状态的变化，从而可以达到基于数据的集群管理。</p>
+<p>ZooKeeper 是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性的问题。其本质上是一个分布式的小文件存储系统。提供基于类似于文件系统的目录树方式的数据存储，并且可以对树中 的节点进行有效管理。从而来维护和监控你存储的数据的状态变化。将通过监控这些数据状态的变化，从而可以达到基于数据的集群管理。</p>
 </blockquote>
 <ul>
-<li>Paxos算法： TODO</li>
-<li>虚拟同步技术(virtual synchrony)：TODO</li>
+<li>Paxos算法：</li>
+<li>虚拟同步技术(virtual synchrony)：</li>
 </ul>
 <h3 id="11-zookeeper-基础">1.1 Zookeeper 基础</h3>
 <ul>
@@ -152,7 +152,7 @@
 </li>
 </ul>
 <figure data-type="image" tabindex="3"><img src="https://raw.githubusercontent.com/toFindMore/ImageBed/master/blog/image-20210617233008097.png" alt="image-20210617233008097" loading="lazy"></figure>
-<h3 id="22-zookeeper-架构">2.2 Zookeeper 架构</h3>
+<h3 id="12-zookeeper-架构">1.2 Zookeeper 架构</h3>
 <ul>
 <li>
 <p>ZooKeeper服务器端运行于两种模式下:独立模式(standalone)和 仲裁模式(quorum)。独立模式几乎与其术语所描述的一样:有一个单独的服务器，ZooKeeper状态无法复制。在仲裁模式下，具有一组 ZooKeeper服务器，我们称为ZooKeeper集合(ZooKeeper ensemble)，它们之前可以进行状态的复制，并同时为服务于客户端的请求。</p>
@@ -164,8 +164,57 @@
 <p>客户端通过TCP协议与服务器进行连接并通信， 但当会话无法与当前连接的服务器继续通信时，会话就可能转移到另一个服务器上。会话提供了顺序保障，这就意味着同一个会话中的请求会以FIFO(先进先出)顺序执行</p>
 </li>
 </ul>
-<h3 id="23-开始使用zookeeper">2.3 开始使用ZooKeeper</h3>
-<p>// TODO</p>
+<h3 id="23-开始使用zookeepermac-os">2.3 开始使用ZooKeeper（MAC OS）</h3>
+<ul>
+<li>
+<p>首先从官网下载zookeeper压缩包 https://zookeeper.apache.org/releases.html</p>
+</li>
+<li>
+<p>找到需要下载的包 <a href="https://www.apache.org/dyn/closer.lua/zookeeper/zookeeper-3.7.0/apache-zookeeper-3.7.0.tar.gz">Apache ZooKeeper 3.7.0 Source Release</a>(<a href="https://downloads.apache.org/zookeeper/zookeeper-3.7.0/apache-zookeeper-3.7.0.tar.gz.asc">asc</a>, <a href="https://downloads.apache.org/zookeeper/zookeeper-3.7.0/apache-zookeeper-3.7.0.tar.gz.sha512">sha512</a>)</p>
+</li>
+<li>
+<p>得到压缩包 apache-zookeeper-3.7.0-bin.tar.gz</p>
+</li>
+<li>
+<p>进入相应文件夹，解压压缩包</p>
+<pre><code class="language-shell">tar -zxvf ./apache-zookeeper-3.7.0-bin.tar.gz
+</code></pre>
+</li>
+<li>
+<p>进入解压后的文件目录，修改配置文件，位于conf文件夹下,   重命名为 zoo.cfg</p>
+</li>
+<li>
+<p>修改 zoo.cfg, 可以修改 DataDir 文件夹位置，用来zookeeper建目录用的</p>
+<figure data-type="image" tabindex="4"><img src="https://raw.githubusercontent.com/toFindMore/ImageBed/master/blog/image-20210623224859656.png" alt="image-20210623224859656" loading="lazy"></figure>
+</li>
+<li>
+<p>启动</p>
+<pre><code class="language-shell">./bin/zkServer.sh start
+</code></pre>
+<figure data-type="image" tabindex="5"><img src="https://raw.githubusercontent.com/toFindMore/ImageBed/master/blog/image-20210623225209771.png" alt="image-20210623225209771" loading="lazy"></figure>
+<blockquote>
+<p>上面这个命令是后台运行</p>
+<p>如果想在前台运行并输出命令，可以用</p>
+<pre><code class="language-shell">./bin/zkServer.sh start-foreground
+</code></pre>
+</blockquote>
+</li>
+<li>
+<p>暂停</p>
+<pre><code class="language-shell">./bin/zkServer.sh stop
+</code></pre>
+</li>
+<li>
+<p>会话建立</p>
+<pre><code class="language-shell">./bin/zkCli.sh
+</code></pre>
+<figure data-type="image" tabindex="6"><img src="https://raw.githubusercontent.com/toFindMore/ImageBed/master/blog/image-20210623230247625.png" alt="image-20210623230247625" loading="lazy"></figure>
+</li>
+<li>
+<p>建立节点，删除并退出会话</p>
+<figure data-type="image" tabindex="7"><img src="https://raw.githubusercontent.com/toFindMore/ImageBed/master/blog/image-20210623230633970.png" alt="image-20210623230633970" loading="lazy"></figure>
+</li>
+</ul>
 
                 </div>
             </article>
