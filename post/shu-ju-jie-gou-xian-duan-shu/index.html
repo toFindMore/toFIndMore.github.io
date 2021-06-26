@@ -1,0 +1,329 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+<meta name="description" content=""/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+<title>【数据结构】线段树 | ZhouJian&#39;s Blog</title>
+
+<link rel="shortcut icon" href="https://tofindmore.github.io/favicon.ico?v=1624716534454">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://tofindmore.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dart.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <div class="navbar-brand">
+        <img class="user-avatar" src="/images/avatar.png" alt="头像">
+        <div class="site-name gt-c-content-color-first">
+            ZhouJian&#39;s Blog
+        </div>
+    </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+                <div class="nav-item">
+                    
+                        <a href="/" class="menu gt-a-link">
+                            首页
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/tags" class="menu gt-a-link">
+                            标签
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/post/guan-yu/" class="menu gt-a-link">
+                            关于
+                        </a>
+                    
+                </div>
+            
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1624716534454" action="/search/index.html">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    【数据结构】线段树
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2021-06-26 22:07 ·
+                    </time>
+                    
+                        <a href="https://tofindmore.github.io/tag/R_vR8X-2_/" class="post-tags">
+                            # 数据结构
+                        </a>
+                    
+                        <a href="https://tofindmore.github.io/tag/PDWXVMa-A/" class="post-tags">
+                            # algorithm
+                        </a>
+                    
+                </div>
+                <div class="post-content">
+                    <h2 id="1线段树基本介绍与实现">1.线段树基本介绍与实现</h2>
+<p>树状数组是一种基于分治思想的二叉树结构，用于在区间上进行信息统计，与按照二进制位进行区间划分的树状数组相比，线段树更加通用：</p>
+<ol>
+<li>线段树莓哥节点都代表一个区间</li>
+<li>线段树具有唯一的根节点，代表的区间是整个统计范围，如 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>[</mo><mn>1</mn><mo separator="true">,</mo><mi>N</mi><mo>]</mo></mrow><annotation encoding="application/x-tex">[1, N]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mclose">]</span></span></span></span></li>
+<li>线段树的每个叶子节点都代表一个长度为1的元区间 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>[</mo><mi>x</mi><mo separator="true">,</mo><mi>x</mi><mo>]</mo></mrow><annotation encoding="application/x-tex">[x, x]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathdefault">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">x</span><span class="mclose">]</span></span></span></span></li>
+<li>对于每个内部节点 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>[</mo><mi>l</mi><mo separator="true">,</mo><mi>r</mi><mo>]</mo></mrow><annotation encoding="application/x-tex">[l, r]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mclose">]</span></span></span></span>，他的左子节点是 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>[</mo><mi>m</mi><mi>i</mi><mi>d</mi><mo>+</mo><mn>1</mn><mo separator="true">,</mo><mi>r</mi><mo>]</mo></mrow><annotation encoding="application/x-tex">[mid+1, r]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathdefault">m</span><span class="mord mathdefault">i</span><span class="mord mathdefault">d</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mclose">]</span></span></span></span>, 其中 <code>mid = (l+r) &gt;&gt; 1</code></li>
+</ol>
+<p>如下图所示，是一颗二叉树视角的线段树，我们要做的就是做好每个节点的统计信息。</p>
+<figure data-type="image" tabindex="1"><img src="https://raw.githubusercontent.com/toFindMore/ImageBed/master/blog/image-20210626214952586.png" alt="image-20210626214952586" loading="lazy"></figure>
+<p>线段树查询、更新的时间复杂度是<code>O(logN)</code>，空间复杂度是<code>O(4n)</code>（至于为什么，可以参照上图证明下就可以了），支持区间操作的（区间操作的时候要做懒标记，即 pushdown 操作）。</p>
+<p><strong>下面是实现方式</strong></p>
+<pre><code class="language-c++">const int N = 2e5 + 10;
+
+// 建立结构体，空间是原始数组的4倍
+struct Node {
+    int l, r;
+    int val;
+} tr[N &lt;&lt; 2];
+
+// 由子节点，向上记录统计信息，如本处记录的是左右节点哪个最大
+void pushUp(int u) {
+    tr[u].val = max(tr[u &lt;&lt; 1].val, tr[u &lt;&lt; 1 | 1].val);
+}
+
+// l, r作为新建节点的区间信息，u 代表节点下标
+void build(int l, int r, int u) {
+    tr[u].l = l, tr[u].r = r;
+    if (l == r) return;
+    int mid = l + r &gt;&gt; 1;
+    build(l, mid, u &lt;&lt; 1);
+    build(mid + 1, r, u &lt;&lt; 1 | 1);
+}
+
+// 单点修改下标 i 位置的值
+void modify(int u, int i, int v) {
+    int l = tr[u].l, r = tr[u].r;
+    if (l == r) {
+        tr[u].val = v;
+        return;
+    }
+  	// 查找应该更新哪一边
+    int mid = l + r &gt;&gt; 1;
+    if (i &lt;= mid) modify(u &lt;&lt; 1, i, v);
+    else modify(u &lt;&lt; 1 | 1, i, v);
+  	// 递归完之后，更新本节点的值
+    pushUp(u);
+}
+
+// 查询区间l, r之间的最大数是多少
+int query(int l, int r, int u) {
+  	// 如果刚好对应，则返回
+    if (tr[u].l &gt;= l &amp;&amp; tr[u].r &lt;= r) return tr[u].val;
+    int mid = tr[u].l + tr[u].r &gt;&gt; 1;
+  	// 如果整个在左边
+    if (r &lt;= mid) return query(l, r, u &lt;&lt; 1);
+  	// 如果整个在右边
+    else if (l &gt; mid) return query(l, r, u &lt;&lt; 1 | 1);
+  	// 跨越两边
+    else return max(query(l, mid, u &lt;&lt; 1), query(mid + 1, r, u &lt;&lt; 1 | 1));
+}
+</code></pre>
+<h2 id="2-一些基本使用">2. 一些基本使用</h2>
+<h3 id="例题1最大数">【例题1】最大数</h3>
+<blockquote>
+<p>给定一个正整数数列 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>a</mi><mn>1</mn></msub><mo separator="true">,</mo><msub><mi>a</mi><mn>2</mn></msub><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><msub><mi>a</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">a_1,a_2,…,a_n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 每一个数都在 0∼p−1 之间。</p>
+<p>可以对这列数进行两种操作：</p>
+<ol>
+<li>添加操作：向序列后添加一个数，序列长度变成 n+1；</li>
+<li>询问操作：询问这个序列中最后 L 个数中最大的数是多少。</li>
+</ol>
+<p>程序运行的最开始，整数序列为空。</p>
+<p>一共要对整数序列进行 m 次操作。</p>
+<p>写一个程序，读入操作的序列，并输出询问操作的答案。</p>
+<h4 id="输入格式">输入格式</h4>
+<p>第一行有两个正整数 m,p，意义如题目描述；</p>
+<p>接下来 m 行，每一行表示一个操作。</p>
+<p>如果该行的内容是 <code>Q L</code>，则表示这个操作是询问序列中最后 LL 个数的最大数是多少；</p>
+<p>如果是 <code>A t</code>，则表示向序列后面加一个数，加入的数是 (t+a) mod p。其中，t 是输入的参数，a 是在这个添加操作之前最后一个询问操作的答案（如果之前没有询问操作，则 a=0）。</p>
+<p>第一个操作一定是添加操作。对于询问操作，L&gt;0 且不超过当前序列的长度。</p>
+<h4 id="输出格式">输出格式</h4>
+<p>对于每一个询问操作，输出一行。该行只有一个数，即序列中最后 LL 个数的最大数。</p>
+<h4 id="数据范围">数据范围</h4>
+<p><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>1</mn><mo>≤</mo><mi>m</mi><mo>≤</mo><mn>2</mn><mo>×</mo><mn>1</mn><msup><mn>0</mn><mn>5</mn></msup></mrow><annotation encoding="application/x-tex">1≤m≤2×10^5</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.78041em;vertical-align:-0.13597em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.7719400000000001em;vertical-align:-0.13597em;"></span><span class="mord mathdefault">m</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord">1</span><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">5</span></span></span></span></span></span></span></span></span></span></span><br>
+<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>1</mn><mo>≤</mo><mi>p</mi><mo>≤</mo><mn>2</mn><mo>×</mo><mn>1</mn><msup><mn>0</mn><mn>9</mn></msup></mrow><annotation encoding="application/x-tex">1≤p≤2×10^9</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.78041em;vertical-align:-0.13597em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8304100000000001em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord">1</span><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">9</span></span></span></span></span></span></span></span></span></span></span><br>
+<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>0</mn><mo>≤</mo><mi>t</mi><mo>&lt;</mo><mi>p</mi></mrow><annotation encoding="application/x-tex">0≤t&lt;p</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.78041em;vertical-align:-0.13597em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.65418em;vertical-align:-0.0391em;"></span><span class="mord mathdefault">t</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">p</span></span></span></span></p>
+<h4 id="输入样例">输入样例：</h4>
+<pre><code>10 100
+A 97
+Q 1
+Q 1
+A 17
+Q 2
+A 63
+Q 1
+Q 1
+Q 3
+A 99
+</code></pre>
+<h4 id="输出样例">输出样例：</h4>
+<pre><code>97
+97
+97
+60
+60
+97
+</code></pre>
+<h4 id="样例解释">样例解释</h4>
+<p>最后的序列是 97,14,60,96</p>
+</blockquote>
+<p><strong>实现代码如下</strong></p>
+<pre><code class="language-c++">#include &lt;iostream&gt;
+#include &lt;cmath&gt;
+#include &lt;algorithm&gt;
+#include &lt;vector&gt;
+
+using namespace std;
+
+const int N = 2e5 + 10;
+
+struct Node {
+    int l, r;
+    int val;
+} tr[N &lt;&lt; 2];
+
+void pushUp(int u) {
+    tr[u].val = max(tr[u &lt;&lt; 1].val, tr[u &lt;&lt; 1 | 1].val);
+}
+
+void build(int l, int r, int u) {
+    tr[u].l = l, tr[u].r = r;
+    if (l == r) return;
+    int mid = l + r &gt;&gt; 1;
+    build(l, mid, u &lt;&lt; 1);
+    build(mid + 1, r, u &lt;&lt; 1 | 1);
+}
+
+void modify(int u, int i, int v) {
+    int l = tr[u].l, r = tr[u].r;
+    if (l == r) {
+        tr[u].val = v;
+        return;
+    }
+    int mid = l + r &gt;&gt; 1;
+    if (i &lt;= mid) modify(u &lt;&lt; 1, i, v);
+    else modify(u &lt;&lt; 1 | 1, i, v);
+    pushUp(u);
+}
+
+int query(int l, int r, int u) {
+    if (tr[u].l &gt;= l &amp;&amp; tr[u].r &lt;= r) return tr[u].val;
+    int mid = tr[u].l + tr[u].r &gt;&gt; 1;
+    if (r &lt;= mid) return query(l, r, u &lt;&lt; 1);
+    else if (l &gt; mid) return query(l, r, u &lt;&lt; 1 | 1);
+    else return max(query(l, mid, u &lt;&lt; 1), query(mid + 1, r, u &lt;&lt; 1 | 1));
+}
+
+int main() {
+    int m, p, k, n = 0;
+    int last = 0;
+    build(1, N, 1);
+    cin &gt;&gt; m &gt;&gt; p;
+    while (m--) {
+        char op[2];
+        scanf(&quot;%s%d&quot;, op, &amp;k);
+        if (op[0] == 'Q') {
+            last = query(n - k + 1, n, 1);
+            cout &lt;&lt; last &lt;&lt; endl;
+        } else {
+            modify(1, ++n, (k + last) % p);
+        }
+    }
+    return 0;
+}
+</code></pre>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://tofindmore.github.io/post/shu-ju-jie-gou-shu-zhuang-shu-zu/" class="post-title gt-a-link">
+                    【数据结构】树状数组
+                </a>
+            </div>
+        
+
+        
+
+        
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first">个人积累与技术分享</div>
+    <div class="social-container">
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        冲冲冲！！！
+    </div>
+    <div>
+        Theme by <a href="https://imhanjie.com/" target="_blank">imhanjie</a>, Powered by <a
+                href="https://github.com/getgridea/gridea" target="_blank">Gridea | <a href="https://tofindmore.github.io/atom.xml" target="_blank">RSS</a></a>
+    </div>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+</div>
+</body>
+</html>
