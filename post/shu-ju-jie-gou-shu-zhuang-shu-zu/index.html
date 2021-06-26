@@ -6,7 +6,7 @@
 
 <title>【数据结构】树状数组 | ZhouJian&#39;s Blog</title>
 
-<link rel="shortcut icon" href="https://tofindmore.github.io/favicon.ico?v=1624716822770">
+<link rel="shortcut icon" href="https://tofindmore.github.io/favicon.ico?v=1624717394879">
 
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://tofindmore.github.io/styles/main.css">
@@ -69,7 +69,7 @@
             
         </div>
         <div style="text-align: center">
-            <form id="gridea-search-form" style="position: relative" data-update="1624716822770" action="/search/index.html">
+            <form id="gridea-search-form" style="position: relative" data-update="1624717394879" action="/search/index.html">
                 <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
                 <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
             </form>
@@ -99,7 +99,7 @@
                 </div>
                 <div class="post-content">
                     <h2 id="1-树状数组基本介绍与实现">1. 树状数组基本介绍与实现</h2>
-<p>树状数组是一个动态维护前缀和的数据结构，其利用的是二进制位转化的关系，保证查询和插入的时间复杂度都是O (logN)， 空间复杂度为 O(n)。如下图所示，粉色代表开辟出的空间数组，代表指向的所有块的和。</p>
+<p>树状数组是一个动态维护前缀和的数据结构，其利用的是二进制位转化的关系，保证查询和插入的时间复杂度都是<code>O (logN)</code>， 空间复杂度为 <code>O(N)</code>。如下图所示，粉色代表开辟出的空间数组，代表指向的所有块的和。</p>
 <p>如果要算出前7（111B）的和，如图可知，只需算出 4(100B)、6(110B)、7(111B) 3处的和即可，根据 7（111B）， 删去其2进制的<strong>末尾1</strong>即得到 6（110B）, 根据 6（110B）， 删去其2进制的<strong>末尾1</strong>即得到 4（100B）,使得其具有天然的关系性。（111 -&gt; 110 -&gt; 100）</p>
 <figure data-type="image" tabindex="1"><img src="https://raw.githubusercontent.com/toFindMore/ImageBed/master/blog/image-20210626204923632.png" alt="image-20210626204923632" loading="lazy"></figure>
 <p><strong>lowbit数组</strong>：对于数 x ， 可得到其末尾 1 的值</p>

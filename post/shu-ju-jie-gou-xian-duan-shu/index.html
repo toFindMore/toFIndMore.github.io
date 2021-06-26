@@ -6,7 +6,7 @@
 
 <title>【数据结构】线段树 | ZhouJian&#39;s Blog</title>
 
-<link rel="shortcut icon" href="https://tofindmore.github.io/favicon.ico?v=1624716822770">
+<link rel="shortcut icon" href="https://tofindmore.github.io/favicon.ico?v=1624717394879">
 
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://tofindmore.github.io/styles/main.css">
@@ -69,7 +69,7 @@
             
         </div>
         <div style="text-align: center">
-            <form id="gridea-search-form" style="position: relative" data-update="1624716822770" action="/search/index.html">
+            <form id="gridea-search-form" style="position: relative" data-update="1624717394879" action="/search/index.html">
                 <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
                 <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
             </form>
@@ -101,14 +101,14 @@
                     <h2 id="1线段树基本介绍与实现">1.线段树基本介绍与实现</h2>
 <p>树状数组是一种基于分治思想的二叉树结构，用于在区间上进行信息统计，与按照二进制位进行区间划分的树状数组相比，线段树更加通用：</p>
 <ol>
-<li>线段树莓哥节点都代表一个区间</li>
+<li>线段树每个节点都代表一个区间</li>
 <li>线段树具有唯一的根节点，代表的区间是整个统计范围，如 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>[</mo><mn>1</mn><mo separator="true">,</mo><mi>N</mi><mo>]</mo></mrow><annotation encoding="application/x-tex">[1, N]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mclose">]</span></span></span></span></li>
 <li>线段树的每个叶子节点都代表一个长度为1的元区间 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>[</mo><mi>x</mi><mo separator="true">,</mo><mi>x</mi><mo>]</mo></mrow><annotation encoding="application/x-tex">[x, x]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathdefault">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">x</span><span class="mclose">]</span></span></span></span></li>
 <li>对于每个内部节点 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>[</mo><mi>l</mi><mo separator="true">,</mo><mi>r</mi><mo>]</mo></mrow><annotation encoding="application/x-tex">[l, r]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mclose">]</span></span></span></span>，他的左子节点是 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>[</mo><mi>m</mi><mi>i</mi><mi>d</mi><mo>+</mo><mn>1</mn><mo separator="true">,</mo><mi>r</mi><mo>]</mo></mrow><annotation encoding="application/x-tex">[mid+1, r]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathdefault">m</span><span class="mord mathdefault">i</span><span class="mord mathdefault">d</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mclose">]</span></span></span></span>, 其中 <code>mid = (l+r) &gt;&gt; 1</code></li>
 </ol>
 <p>如下图所示，是一颗二叉树视角的线段树，我们要做的就是做好每个节点的统计信息。</p>
 <figure data-type="image" tabindex="1"><img src="https://raw.githubusercontent.com/toFindMore/ImageBed/master/blog/image-20210626221151778.png" alt="image-20210626221151778" loading="lazy"></figure>
-<p>线段树查询、更新的时间复杂度是<code>O(logN)</code>，空间复杂度是<code>O(4n)</code>（至于为什么，可以参照上图证明下就可以了），支持区间操作的（区间操作的时候要做懒标记，即 pushdown 操作）。</p>
+<p>线段树查询、更新的时间复杂度是<code>O(logN)</code>，空间复杂度是<code>O(4N)</code>（至于为什么，可以参照上图证明下就可以了），支持区间操作的（区间操作的时候要做懒标记，即 pushdown 操作）。</p>
 <p><strong>下面是实现方式</strong></p>
 <pre><code class="language-c++">const int N = 2e5 + 10;
 
