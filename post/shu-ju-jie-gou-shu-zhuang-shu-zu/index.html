@@ -4,7 +4,7 @@
 <meta name="description" content=""/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-<title>关于本站 | ZhouJian&#39;s Blog</title>
+<title>【数据结构】树状数组 | ZhouJian&#39;s Blog</title>
 
 <link rel="shortcut icon" href="https://tofindmore.github.io/favicon.ico?v=1624713218291">
 
@@ -81,23 +81,126 @@
         <div class="post-detail gt-bg-theme-color-second">
             <article class="gt-post-content">
                 <h2 class="post-title">
-                    关于本站
+                    【数据结构】树状数组
                 </h2>
                 <div class="post-info">
                     <time class="post-time gt-c-content-color-first">
-                        · 2021-04-13 20:32 ·
+                        · 2021-05-04 21:12 ·
                     </time>
+                    
+                        <a href="https://tofindmore.github.io/tag/R_vR8X-2_/" class="post-tags">
+                            # 数据结构
+                        </a>
+                    
+                        <a href="https://tofindmore.github.io/tag/PDWXVMa-A/" class="post-tags">
+                            # algorithm
+                        </a>
                     
                 </div>
                 <div class="post-content">
-                    <p>大家好，我是ZhouJian。希望借此博客记录平时所学所想， 可以作为日后浏览、怀念的地方。</p>
-<p align="right">2021.4.13 于西塘花苑</p>
-<figure data-type="image" tabindex="1"><img src="https://raw.githubusercontent.com/toFindMore/ImageBed/master/blog/20210413202031_82564.jpeg" alt="20210413202031_82564" loading="lazy"></figure>
+                    <h2 id="1-树状数组基本介绍与实现">1. 树状数组基本介绍与实现</h2>
+<p>树状数组是一个动态维护前缀和的数据结构，其利用的是二进制位转化的关系，保证查询和插入的时间复杂度都是O (logN)， 空间复杂度为 O(n)。如下图所示，粉色代表开辟出的空间数组，代表指向的所有块的和。</p>
+<p>如果要算出前7（111B）的和，如图可知，只需算出 4(100B)、6(110B)、7(111B) 3处的和即可，根据 7（111B）， 删去其2进制的<strong>末尾1</strong>即得到 6（110B）, 根据 6（110B）， 删去其2进制的<strong>末尾1</strong>即得到 4（100B）,使得其具有天然的关系性。（111 -&gt; 110 -&gt; 100）</p>
+<figure data-type="image" tabindex="1"><img src="https://raw.githubusercontent.com/toFindMore/ImageBed/master/blog/image-20210626204923632.png" alt="image-20210626204923632" loading="lazy"></figure>
+<p><strong>lowbit数组</strong>：对于数 x ， 可得到其末尾 1 的值</p>
+<pre><code class="language-c++">int lowbit(int x) { return x &amp; (-x); }
+</code></pre>
+<blockquote>
+<p>证明如下图 <img src="https://raw.githubusercontent.com/toFindMore/ImageBed/master/blog/image-20210626210732857.png" alt="image-20210626210732857" loading="lazy"></p>
+</blockquote>
+<p><strong>下面是实现方式</strong>（往往与离散化一起使用）</p>
+<pre><code class="language-c++">int bit[N];
+
+int lowbit(int x) { return x &amp; (-x); }
+
+int query(int x) {
+    int ans = 0;
+    while (x &gt; 0) {
+        ans += bit[x];
+        x -= lowbit(x);
+    }
+    return ans;
+}
+
+void add(int x, int val) {
+    while (x &lt; N) {
+        bit[x] += val;
+        x += lowbit(x);
+    }
+}
+</code></pre>
+<h2 id="2-一些基本使用">2. 一些基本使用</h2>
+<h3 id="例题逆序对">【例题】逆序对</h3>
+<blockquote>
+<p>在数组中的两个数字，如果前面一个数字大于后面的数字，则这两个数字组成一个逆序对。输入一个数组，求出这个数组中的逆序对的总数。</p>
+<p>示例 1:</p>
+<p>输入: [7,5,6,4]<br>
+输出: 5</p>
+</blockquote>
+<p><strong>实现代码如下</strong></p>
+<pre><code class="language-c++">#include &lt;vector&gt;
+#include &lt;unordered_map&gt;
+
+using namespace std;
+
+const int SIZE = 5e5 + 10;
+
+class Solution {
+
+    int bit[SIZE];
+
+    int lowbit(int x) { return x &amp; (-x); }
+
+    int query(int x) {
+        int ans = 0;
+        while (x &gt; 0) {
+            ans += bit[x];
+            x -= lowbit(x);
+        }
+        return ans;
+    }
+
+    void add(int x, int val) {
+        while (x &lt; SIZE) {
+            bit[x] += val;
+            x += lowbit(x);
+        }
+    }
+
+    unordered_map&lt;int, int&gt; real2idx;
+
+public:
+    int reversePairs(vector&lt;int&gt; &amp;nums) {
+        vector&lt;int&gt; copyNum(nums);
+        // 离散化
+        sort(copyNum.begin(), copyNum.end());
+        int cnt = 1;
+        for (int num : copyNum) {
+            if (real2idx.count(num)) continue;
+            real2idx[num] = cnt++;
+        }
+
+        int ans = 0;
+        for (int num : nums) {
+            ans += query(SIZE - 1) - query(real2idx[num]);
+            add(real2idx[num], 1);
+        }
+        return ans;
+    }
+};
+</code></pre>
 
                 </div>
             </article>
         </div>
 
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://tofindmore.github.io/post/shu-ju-jie-gou-bing-cha-ji/" class="post-title gt-a-link">
+                    【数据结构】并查集
+                </a>
+            </div>
         
 
         
