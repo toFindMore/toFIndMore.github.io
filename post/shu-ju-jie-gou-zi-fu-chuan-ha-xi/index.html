@@ -6,7 +6,7 @@
 
 <title>【数据结构】字符串哈希 | ZhouJian&#39;s Blog</title>
 
-<link rel="shortcut icon" href="https://tofindmore.github.io/favicon.ico?v=1625414192535">
+<link rel="shortcut icon" href="https://tofindmore.github.io/favicon.ico?v=1625414544046">
 
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://tofindmore.github.io/styles/main.css">
@@ -69,7 +69,7 @@
             
         </div>
         <div style="text-align: center">
-            <form id="gridea-search-form" style="position: relative" data-update="1625414192535" action="/search/index.html">
+            <form id="gridea-search-form" style="position: relative" data-update="1625414544046" action="/search/index.html">
                 <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
                 <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
             </form>
@@ -99,7 +99,7 @@
                 </div>
                 <div class="post-content">
                     <h2 id="1-介绍与基础实现">1 介绍与基础实现</h2>
-<p>字符串哈希就是把一个任意长度的字符串映射成一个非负整数，并且冲突概率几乎为0。KMP 相比于改方法，除了在计算字符串循环节时候用优势，其他情景下没有啥优势。</p>
+<p>字符串哈希就是把一个任意长度的字符串映射成一个非负整数，并且冲突概率几乎为0。KMP 相比于该方法，除了在计算字符串循环节时候有优势，这个方法完爆KMP。</p>
 <p>如何做：取一个固定值 P （经验来说通常取 131 和 13331， 此时概率极低），把字符串看作是 P 进制数， 取一个固定值 M， 改 P 进制数对 M 取余，就是改字符串的HASH值。</p>
 <p>如果HASH值相等，通常可以认为两个串是相等的。通常 M 取 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mn>2</mn><mn>64</mn></msup></mrow><annotation encoding="application/x-tex">2^{64}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">6</span><span class="mord mtight">4</span></span></span></span></span></span></span></span></span></span></span></span>, 可以直接用 <code>unsigned long long</code> 来存储这个HASH 值，在计算的时候不处理算数溢出的问题，因为对于 <code>unsigned</code>  数值，溢出的时候相当于对 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mn>2</mn><mn>64</mn></msup></mrow><annotation encoding="application/x-tex">2^{64}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">6</span><span class="mord mtight">4</span></span></span></span></span></span></span></span></span></span></span></span> 取模，这样就可以避免低效的取模运算了。</p>
 <p>假设我们已经算出了字符串的前缀哈希值，第 i 位记为 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>h</mi><mo>(</mo><mi>i</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">h(i)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">h</span><span class="mopen">(</span><span class="mord mathdefault">i</span><span class="mclose">)</span></span></span></span>，我们就可以计算一个子串的HASH值，下图是证明(计算 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>l</mi><mo separator="true">,</mo><mi>r</mi></mrow><annotation encoding="application/x-tex">l, r</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span></span></span></span> 子串的HASH值)：</p>
@@ -345,7 +345,7 @@ int main() {
             <div class="next-post">
                 <div class="next gt-c-content-color-first">下一篇</div>
                 <a href="https://tofindmore.github.io/post/shu-xue-zhi-shi-1-zhi-shu-yu-yue-shu/" class="post-title gt-a-link">
-                    【数学知识】 一、质数与约数
+                    【数学知识】 质数与约数
                 </a>
             </div>
         
