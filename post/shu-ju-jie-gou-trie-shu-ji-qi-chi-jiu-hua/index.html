@@ -6,7 +6,7 @@
 
 <title>【数据结构】Trie树 | ZhouJian&#39;s Blog</title>
 
-<link rel="shortcut icon" href="https://tofindmore.github.io/favicon.ico?v=1626004395101">
+<link rel="shortcut icon" href="https://tofindmore.github.io/favicon.ico?v=1626618646024">
 
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://tofindmore.github.io/styles/main.css">
@@ -69,7 +69,7 @@
             
         </div>
         <div style="text-align: center">
-            <form id="gridea-search-form" style="position: relative" data-update="1626004395101" action="/search/index.html">
+            <form id="gridea-search-form" style="position: relative" data-update="1626618646024" action="/search/index.html">
                 <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
                 <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
             </form>
@@ -271,6 +271,104 @@ int main() {
     cout &lt;&lt; ans &lt;&lt; endl;
     return 0;
 }
+</code></pre>
+<h3 id="3-httpsleetcode-cncomproblemsmaximum-genetic-difference-query">3. https://leetcode-cn.com/problems/maximum-genetic-difference-query/</h3>
+<p>离线dfs  +  trie</p>
+<pre><code class="language-c++">const int N = 1e5 + 100;
+
+const int B = 18;
+
+typedef pair&lt;int, int&gt; PII;
+
+class Solution {
+
+    int idx = 1;
+
+    int node[N*B][2];
+
+    int cnt[N*B];
+
+    unordered_map&lt;int, vector&lt;PII&gt;&gt; qm;
+
+    unordered_map&lt;int, vector&lt;int&gt;&gt; sm;
+
+    int head;
+
+    void insert(int v) {
+        int cur = head;
+        cnt[cur]++;
+        for(int i=B-1;i&gt;=0;i--) {
+            int t = v &gt;&gt; i &amp; 1;
+            if(node[cur][t] == 0) {
+                node[cur][t] = idx++;
+            }
+            cur = node[cur][t];
+            cnt[cur]++;
+        }
+    }
+
+    void erase(int v) {
+        int cur = head;
+        cnt[cur]--;
+        for(int i=B-1;i&gt;=0;i--) {
+            int t = v &gt;&gt; i &amp; 1;
+            if(cnt[node[cur][t]] == 1) {
+                node[cur][t] = 0;
+                return;
+            }
+            cur = node[cur][t];
+            cnt[cur]--;
+        }
+    }
+
+    int findMax(int v) {
+        int ret = 0;
+        int cur = head;
+        for(int i=B-1;i&gt;=0;i--) {
+            int t = v &gt;&gt; i &amp; 1;
+            if(node[cur][t^1] &gt; 0) {
+                cur = node[cur][t^1];
+                ret += 1 &lt;&lt; i;
+            } else {
+                cur = node[cur][t];
+            }
+        }
+        return ret;
+    }
+
+    vector&lt;int&gt; ans;
+
+    void dfs(int u) {
+        insert(u);
+        vector&lt;PII&gt;&amp; p = qm[u];
+        for(int i=0;i&lt;p.size();i++) {
+            PII&amp; t = p[i];
+            int tmp = findMax(t.first);
+            ans[t.second] = findMax(t.first);
+        }
+        vector&lt;int&gt;&amp; son = sm[u];
+        for(int s : son)  {
+            dfs(s);
+        }
+        erase(u);
+    }
+
+public:
+    vector&lt;int&gt; maxGeneticDifference(vector&lt;int&gt;&amp; ps, vector&lt;vector&lt;int&gt;&gt;&amp; qs) {
+        head = idx++;
+        int qsize = qs.size();
+        for(int i=0;i&lt;qsize;i++) {
+            auto&amp; q = qs[i];
+            qm[q[0]].push_back({q[1], i});
+        }
+        for(int i=0;i&lt;ps.size();i++) {
+            sm[ps[i]].push_back(i);
+        }
+        ans.resize(qs.size());
+        dfs(sm[-1][0]);
+        return ans;
+    }
+};
 </code></pre>
 
                 </div>
