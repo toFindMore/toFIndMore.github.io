@@ -1,0 +1,235 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+<meta name="description" content=""/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+<title>二分图匹配 | ZhouJian&#39;s Blog</title>
+
+<link rel="shortcut icon" href="https://tofindmore.github.io/favicon.ico?v=1627828796420">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://tofindmore.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dart.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <div class="navbar-brand">
+        <img class="user-avatar" src="/images/avatar.png" alt="头像">
+        <div class="site-name gt-c-content-color-first">
+            ZhouJian&#39;s Blog
+        </div>
+    </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+                <div class="nav-item">
+                    
+                        <a href="/" class="menu gt-a-link">
+                            首页
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/tags" class="menu gt-a-link">
+                            标签
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/post/guan-yu/" class="menu gt-a-link">
+                            关于
+                        </a>
+                    
+                </div>
+            
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1627828796420" action="/search/index.html">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    二分图匹配
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2021-08-01 22:39 ·
+                    </time>
+                    
+                        <a href="https://tofindmore.github.io/tag/B5QgbS4Ux/" class="post-tags">
+                            # 图论
+                        </a>
+                    
+                        <a href="https://tofindmore.github.io/tag/PDWXVMa-A/" class="post-tags">
+                            # algorithm
+                        </a>
+                    
+                </div>
+                <div class="post-content">
+                    <h3 id="1-二分图定义">1. 二分图定义</h3>
+<p>如果一张无向图的 N 个节点（<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>N</mi><mo>&gt;</mo><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">N &gt;= 2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72243em;vertical-align:-0.0391em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span></span><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">2</span></span></span></span>）可以分成A、B 两个非空集合，其中 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>A</mi><mo>∩</mo><mi>B</mi><mo>=</mo><mi mathvariant="normal">∅</mi></mrow><annotation encoding="application/x-tex">A \cap B = \emptyset</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault">A</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∩</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.80556em;vertical-align:-0.05556em;"></span><span class="mord">∅</span></span></span></span>，并且在同一个集合内的点之间没有边相连，那么称这张无向图为<strong>二分图</strong>。A、B分别称为二分图的左部和右部。</p>
+<h3 id="2-二分图判定">2. 二分图判定</h3>
+<p>定理：一张无向图是二分图，当且仅当图中不存在奇环。</p>
+<p>我们可以根据该定理，使用<strong>染色法</strong>进行二分图的判定。即刚开始所有点都是没有被染色的，dfs遍历图，如果边的两个点都没有被染色，则指定某个点染色为1， 另一个是2；如果边点两点有一条被染色为 k，则另一个未被染色的边即为 3-k；如果两个点都被染色，如果两个点的染色颜色相同，则该图不是二分图，否则就是二分图。</p>
+<p>代码实现如下</p>
+<pre><code class="language-c++">bool dfs(int u, int cor) {
+    color[u] = cor;
+    for(int i=h[u];~i;i=ne[i]) {
+        int b = e[i];
+        if(!color[b]) {
+            dfs(b, 3 - cor);
+        } else {
+            if(color[b] == cor) return false;
+        }
+    }
+    return true;
+}
+</code></pre>
+<h3 id="3-二分图最大匹配">3. 二分图最大匹配</h3>
+<p>任意两条边都没有公共端点 的边的集合被称为图的一组匹配。在二分图中，包含边数最多的一组匹配被称为二分图的最大匹配。</p>
+<p>那么如何求二分图（无边权）的最大匹配呢？</p>
+<p>匈牙利算法：这是一种贪心的思路，实现过程就是遍历所有的左部点，去和右部进行匹配， 对于左部点，遍历其边，如果存在右部点未匹配或者右部点匹配点可以找到其他的左部点， 则匹配成功，否则匹配失败。</p>
+<p>具体代码实现如下 ：</p>
+<pre><code class="language-c++">bool vis[N * N];
+int match[N * N];
+
+bool find(int u) {
+  	// 遍历边
+    for(int i=h[u];~i;i=ne[i]) {
+        int j = e[i];
+      	// 如果该点已被指派过，则跳过
+        if(vis[j]) continue;
+        vis[j] = true;
+      	// 如果存在右部点未匹配或者右部点匹配点可以找到其他的左部点
+        if(match[j] == -1 || find(match[j])) {
+            match[j] = u;
+            return true;
+        }
+    }
+    // 匹配失败
+    return false;
+}
+
+int main() {
+		memset(match, -1, sizeof match);
+  	int ans = 0;
+    for(int i=1;i&lt;=n;i++) {
+      	// 清空 vis
+        memset(vis, false, sizeof vis);
+        if(find(i)) ans ++;
+    }
+  	return 0;
+}
+</code></pre>
+<p>####4.  二分图覆盖与独立集</p>
+<ul>
+<li>
+<p>二分图最小点覆盖：给定一张二分图，求出一个最小的点集 S，使得图中任意一条边都有至少一个端点属于 S，这个问题被称为二分图的<strong>最小点覆盖</strong>，简称最小覆盖。</p>
+<p>可以使用Konig 定义证明：</p>
+<p><strong>二分图最小点覆盖包含的点数等于二分图最大匹配包含的边数。</strong></p>
+</li>
+<li>
+<p>二分图最大独立集：任意两点之间没有边相连的点集是独立集，包含点数最多的一个就是图的最大独立集。</p>
+<p><strong>有以下关系：设G是由 n 个节点的二分图，G 的最大独立集的大小等于 n - 最大匹配数。</strong></p>
+</li>
+<li>
+<p>二分图最小路径点覆盖</p>
+<p>有向无环图 G 是的最小路径点覆盖包含的路径条数，等于 n 减去拆点二分图 G2 的最大匹配数。</p>
+</li>
+</ul>
+<h4 id="5-带权最大匹配-km算法">5. 带权最大匹配 （KM算法）</h4>
+<p>// TODO</p>
+<h3 id="6-网络流">6. 网络流</h3>
+<p>// TODO</p>
+<h3 id="7-题目集">7. 题目集</h3>
+<p>AcWing 257. 关押罪犯<br>
+AcWing 372. 棋盘覆盖<br>
+AcWing 376. 机器任务<br>
+AcWing 378. 骑士放置<br>
+AcWing 379. 捉迷藏</p>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://tofindmore.github.io/post/shu-ju-jie-gou-zi-fu-chuan-ha-xi/" class="post-title gt-a-link">
+                    【数据结构】字符串哈希
+                </a>
+            </div>
+        
+
+        
+
+        
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first">个人积累与技术分享</div>
+    <div class="social-container">
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        冲冲冲！！！
+    </div>
+    <div>
+        Theme by <a href="https://imhanjie.com/" target="_blank">imhanjie</a>, Powered by <a
+                href="https://github.com/getgridea/gridea" target="_blank">Gridea | <a href="https://tofindmore.github.io/atom.xml" target="_blank">RSS</a></a>
+    </div>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+</div>
+</body>
+</html>
