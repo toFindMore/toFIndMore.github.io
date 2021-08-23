@@ -6,7 +6,7 @@
 
 <title>【数据结构】线段树 | ZhouJian&#39;s Blog</title>
 
-<link rel="shortcut icon" href="https://tofindmore.github.io/favicon.ico?v=1627829041977">
+<link rel="shortcut icon" href="https://tofindmore.github.io/favicon.ico?v=1629732526090">
 
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://tofindmore.github.io/styles/main.css">
@@ -69,7 +69,7 @@
             
         </div>
         <div style="text-align: center">
-            <form id="gridea-search-form" style="position: relative" data-update="1627829041977" action="/search/index.html">
+            <form id="gridea-search-form" style="position: relative" data-update="1629732526090" action="/search/index.html">
                 <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
                 <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
             </form>
@@ -110,55 +110,67 @@
 <figure data-type="image" tabindex="1"><img src="https://raw.githubusercontent.com/toFindMore/ImageBed/master/blog/image-20210626221151778.png" alt="image-20210626221151778" loading="lazy"></figure>
 <p>线段树查询、更新的时间复杂度是<code>O(logN)</code>，空间复杂度是<code>O(4N)</code>（至于为什么，可以参照上图证明下就可以了），支持区间操作的（区间操作的时候要做懒标记，即 pushdown 操作）。</p>
 <p><strong>下面是实现方式</strong></p>
-<pre><code class="language-c++">const int N = 2e5 + 10;
-
-// 建立结构体，空间是原始数组的4倍
-struct Node {
+<pre><code class="language-c++">struct Node
+{
     int l, r;
-    int val;
-} tr[N &lt;&lt; 2];
+    // TODO: 需要维护的信息和懒标记
+}tr[N * 4];
 
-// 由子节点，向上记录统计信息，如本处记录的是左右节点哪个最大
-void pushUp(int u) {
-    tr[u].val = max(tr[u &lt;&lt; 1].val, tr[u &lt;&lt; 1 | 1].val);
+void pushup(int u)
+{
+    // TODO: 利用左右儿子信息维护当前节点的信息
 }
 
-// l, r作为新建节点的区间信息，u 代表节点下标
-void build(int l, int r, int u) {
-    tr[u].l = l, tr[u].r = r;
-    if (l == r) return;
-    int mid = l + r &gt;&gt; 1;
-    build(l, mid, u &lt;&lt; 1);
-    build(mid + 1, r, u &lt;&lt; 1 | 1);
+void pushdown(int u)
+{
+    // TODO: 将懒标记下传
 }
 
-// 单点修改下标 i 位置的值
-void modify(int u, int i, int v) {
-    int l = tr[u].l, r = tr[u].r;
-    if (l == r) {
-        tr[u].val = v;
-        return;
+void build(int u, int l, int r)
+{
+    if (l == r) tr[u] = {l, r};
+    else
+    {
+        tr[u] = {l, r};
+        int mid = l + r &gt;&gt; 1;
+        build(u &lt;&lt; 1, l, mid), build(u &lt;&lt; 1 | 1, mid + 1, r);
+        pushup(u);
     }
-  	// 查找应该更新哪一边
-    int mid = l + r &gt;&gt; 1;
-    if (i &lt;= mid) modify(u &lt;&lt; 1, i, v);
-    else modify(u &lt;&lt; 1 | 1, i, v);
-  	// 递归完之后，更新本节点的值
-    pushUp(u);
 }
 
-// 查询区间l, r之间的最大数是多少
-int query(int l, int r, int u) {
-  	// 如果刚好对应，则返回
-    if (tr[u].l &gt;= l &amp;&amp; tr[u].r &lt;= r) return tr[u].val;
-    int mid = tr[u].l + tr[u].r &gt;&gt; 1;
-  	// 如果整个在左边
-    if (r &lt;= mid) return query(l, r, u &lt;&lt; 1);
-  	// 如果整个在右边
-    else if (l &gt; mid) return query(l, r, u &lt;&lt; 1 | 1);
-  	// 跨越两边
-    else return max(query(l, mid, u &lt;&lt; 1), query(mid + 1, r, u &lt;&lt; 1 | 1));
+void update(int u, int l, int r, int d)
+{
+    if (tr[u].l &gt;= l &amp;&amp; tr[u].r &lt;= r)
+    {
+        // TODO: 修改区间
+    }
+    else
+    {
+        pushdown(u);
+        int mid = tr[u].l + tr[u].r &gt;&gt; 1;
+        if (l &lt;= mid) update(u &lt;&lt; 1, l, r, d);
+        if (r &gt; mid) update(u &lt;&lt; 1 | 1, l, r, d);
+        pushup(u);
+    }
 }
+
+int query(int u, int l, int r)
+{
+    if (tr[u].l &gt;= l &amp;&amp; tr[u].r &lt;= r)
+    {
+        return ;  // TODO 需要补充返回值
+    }
+    else
+    {
+        pushdown(u);
+        int mid = tr[u].l + tr[u].r &gt;&gt; 1;
+        int res = 0;
+        if (l &lt;= mid ) res = query(u &lt;&lt; 1, l, r);
+        if (r &gt; mid) res += query(u &lt;&lt; 1 | 1, l, r);
+        return res;
+    }
+}
+
 </code></pre>
 <h2 id="2-一些基本使用">2. 一些基本使用</h2>
 <h3 id="例题1最大数">【例题1】最大数</h3>
