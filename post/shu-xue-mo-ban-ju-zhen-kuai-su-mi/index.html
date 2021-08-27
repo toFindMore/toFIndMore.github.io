@@ -4,7 +4,7 @@
 <meta name="description" content=""/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-<title>ZhouJian&#39;s Blog</title>
+<title>【数学】模板 - 矩阵快速幂 | ZhouJian&#39;s Blog</title>
 
 <link rel="shortcut icon" href="https://tofindmore.github.io/favicon.ico?v=1630077679996">
 
@@ -25,11 +25,11 @@
 
 
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
 </head>
 <body>
 <div class="main gt-bg-theme-color-first">
-    <div class="main-content">
-        <nav class="navbar navbar-expand-lg">
+    <nav class="navbar navbar-expand-lg">
     <div class="navbar-brand">
         <img class="user-avatar" src="/images/avatar.png" alt="头像">
         <div class="site-name gt-c-content-color-first">
@@ -77,34 +77,106 @@
     </div>
 </nav>
 
-        <div class="post-container">
-            <div class="post-detail gt-bg-theme-color-first">
-                <article class="gt-post-content">
-                    <h2 class="post-title">标签</h2>
-        <div class="tags-container">
-            
-                <a class="tag gt-c-content-color-first gt-a-link"
-                   href="https://tofindmore.github.io/tag/B5QgbS4Ux/">#图论</a>
-            
-                <a class="tag gt-c-content-color-first gt-a-link"
-                   href="https://tofindmore.github.io/tag/PDWXVMa-A/">#algorithm</a>
-            
-                <a class="tag gt-c-content-color-first gt-a-link"
-                   href="https://tofindmore.github.io/tag/R_vR8X-2_/">#数据结构</a>
-            
-                <a class="tag gt-c-content-color-first gt-a-link"
-                   href="https://tofindmore.github.io/tag/fhSu4kuUt/">#数学</a>
-            
-                <a class="tag gt-c-content-color-first gt-a-link"
-                   href="https://tofindmore.github.io/tag/nz63PUJMt/">#中间件</a>
-            
-                <a class="tag gt-c-content-color-first gt-a-link"
-                   href="https://tofindmore.github.io/tag/WTU1rFwtV/">#dp</a>
-            
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    【数学】模板 - 矩阵快速幂
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2021-08-27 23:19 ·
+                    </time>
+                    
+                </div>
+                <div class="post-content">
+                    <p>大家都知道 Fibonacci 数列吧，f1=1,f2=1,f3=2,f4=3,…,fn=fn−1+fn−2</p>
+<p>现在问题很简单，输入 n 和 m，求 fn 的前 n 项和 Sn%m。</p>
+<h4 id="输入格式">输入格式</h4>
+<p>共一行，包含两个整数 n 和 m。</p>
+<h4 id="输出格式">输出格式</h4>
+<p>输出前 nn 项和 Sn%m 的值。</p>
+<h4 id="数据范围">数据范围</h4>
+<p>1≤n≤2000000000<br>
+1≤m≤1000000010</p>
+<pre><code>#include &lt;iostream&gt;
+#include &lt;cstring&gt;
+#include &lt;algorithm&gt;
+
+using namespace std;
+
+typedef long long LL;
+
+const int N = 3;
+
+int n, mod;
+
+// 实现矩阵乘法
+vector&lt;vector&lt;LL&gt;&gt; mul(vector&lt;vector&lt;LL&gt;&gt;&amp; a, vector&lt;vector&lt;LL&gt;&gt;&amp; b){
+    int n = a.size();
+    int m = b[0].size();
+    int t = b.size();
+    vector&lt;vector&lt;LL&gt;&gt; c(n, vector&lt;LL&gt;(m, 0));
+    for(int i = 0; i &lt; n; i++){
+        for(int j = 0; j &lt; m; j++){
+            for(int k = 0; k &lt; t; k++){
+                c[i][j] = (c[i][j] + a[i][k] * b[k][j] % mod) % mod;
+            }
+        }
+    }
+    return c;
+}
+
+// 矩阵快速幂
+vector&lt;vector&lt;LL&gt;&gt; qmi(vector&lt;vector&lt;LL&gt;&gt;&amp; a, LL k){
+    // 单位矩阵I
+    vector&lt;vector&lt;LL&gt;&gt; I{{1, 0, 0},
+                         {0, 1, 0},
+                         {0, 0, 1}
+    };
+    while(k){
+        if(k &amp; 1) I = mul(I, a);
+        a = mul(a, a);
+        k &gt;&gt;= 1;
+        }
+    return I;
+}
+
+
+int main() {
+    cin &gt;&gt; n &gt;&gt; mod;
+    if(n == 1 || n == 2) return 1 % mod;
+    n -= 2;
+    vector&lt;vector&lt;LL&gt;&gt; A {{1, 0, 0},
+                          {1, 1, 1},
+                          {1, 1, 0}};
+
+    vector&lt;vector&lt;LL&gt;&gt; ans = qmi(A, n);
+    cout &lt;&lt; (2 * ans[0][0] + ans[1][0] + ans[2][0]) % mod &lt;&lt; endl;
+    return 0;
+}
+
+</code></pre>
+
+                </div>
+            </article>
         </div>
-    </article>
-</div>
-</div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://tofindmore.github.io/post/er-fen-tu-pi-pei/" class="post-title gt-a-link">
+                    【图论】二分图匹配
+                </a>
+            </div>
+        
+
+        
+
+        
+
+        
+
         <div class="site-footer gt-c-content-color-first">
     <div class="slogan gt-c-content-color-first">个人积累与技术分享</div>
     <div class="social-container">
