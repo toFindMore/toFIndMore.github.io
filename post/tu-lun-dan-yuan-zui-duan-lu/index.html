@@ -6,7 +6,7 @@
 
 <title>【图论】单源最短路 | ZhouJian&#39;s Blog</title>
 
-<link rel="shortcut icon" href="https://tofindmore.github.io/favicon.ico?v=1630077679996">
+<link rel="shortcut icon" href="https://tofindmore.github.io/favicon.ico?v=1642777341363">
 
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://tofindmore.github.io/styles/main.css">
@@ -69,7 +69,7 @@
             
         </div>
         <div style="text-align: center">
-            <form id="gridea-search-form" style="position: relative" data-update="1630077679996" action="/search/index.html">
+            <form id="gridea-search-form" style="position: relative" data-update="1642777341363" action="/search/index.html">
                 <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
                 <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
             </form>
@@ -206,29 +206,61 @@ void dijkstra() {
 <p>这个算法是可以处理负权边的</p>
 </blockquote>
 <p><strong>代码模板</strong></p>
-<pre><code class="language-c++">// 起始点 S
-int dist[N], S;
+<pre><code class="language-c++">#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+#include &lt;cstring&gt;
+
+using namespace std;
+
+int n, m;
+
+const int N = 1e5 + 10, M = 1e5 + 10;
+
+int e[M], w[M], h[N], ne[M], idx;
+
+int dist[N], q[N], hh, tt;
 bool st[N];
 
-// 使用的是邻接表
-void spfa() {
-    queue&lt;int&gt; que;
-    que.push(S);
-    dist[u] = 0, st[S] = 1;
-    while (!que.empty()) {
-        int cur = que.front();
-        que.pop();
-        st[cur] = 0;
-        // 遍历所有相邻节点
-        for (int i = h[cur]; i != -1; i = ne[i]) {
-            int k = e[i];
-            if (dist[cur] + w[i] &lt; dist[k]) {
-                dist[k] = dist[cur] + w[i];
-                // 如果不在队列中，则加入队列
-                if (st[k] == 0) que.push(k);
+void add(int a, int b, int c) {
+    e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx++;
+}
+
+int main() {
+    memset(h, -1, sizeof h);
+    memset(dist, 0x3f, sizeof dist);
+    
+    cin &gt;&gt; n &gt;&gt; m;
+    for(int i=0;i&lt;m;i++) {
+        int a, b, c;
+        scanf(&quot;%d%d%d&quot;, &amp;a, &amp;b, &amp;c);
+        add(a, b, c);
+    }
+
+
+    // spfa
+    st[1] = true;
+    q[tt++] = 1;
+    dist[1] = 0;
+    
+    while(hh != tt) {
+        int u = q[hh++];
+        st[u] = false;
+        if(hh == N) hh = 0;
+        for(int i=h[u];~i;i=ne[i]) {
+            int j = e[i];
+            if(dist[j] &gt; dist[u] + w[i]) {
+                dist[j] = dist[u] + w[i];
+                if(!st[j]) {
+                    st[j] = true;
+                    q[tt++] = j;
+                    if(tt == N) tt = 0;
+                }
             }
         }
     }
+    if(dist[n] == 0x3f3f3f3f) puts(&quot;impossible&quot;);
+    else printf(&quot;%d\n&quot;, dist[n]);
+    return 0;
 }
 </code></pre>
 <h3 id="3-floyd多源">3. Floyd（多源）</h3>
